@@ -5,162 +5,117 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>给萍萍的专属惊喜 ❤️</title>
     <style>
-        /* 全局重置+背景基础样式 */
+        /* 全局样式：匹配截图的浅粉色背景 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "微软雅黑", "PingFang SC", sans-serif;
         }
         body {
-            background: linear-gradient(135deg, #ffd6e0, #ffc2d1);
+            background: #ffc2d1; /* 和截图一致的浅粉色背景 */
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 20px;
-            position: relative;
-            overflow: hidden; /* 隐藏超出屏幕的动画元素 */
-        }
-
-        /* 1. 背景动画：浮动爱心+方块 */
-        .bg-animate {
-            position: absolute;
-            border-radius: 8px;
-            opacity: 0.2;
-            animation: float 8s ease-in-out infinite;
-        }
-        /* 爱心形状（用伪元素实现） */
-        .bg-animate.heart::before {
-            content: "❤️";
-            font-size: 20px;
-        }
-        /* 方块形状 */
-        .bg-animate.square {
-            width: 30px;
-            height: 30px;
-            background: white;
-        }
-        /* 浮动动画 */
-        @keyframes float {
-            0%, 100% { 
-                transform: translateY(0) rotate(0deg);
-                opacity: 0.2;
-            }
-            50% { 
-                transform: translateY(-50px) rotate(10deg);
-                opacity: 0.4;
-            }
-        }
-
-        /* 2. 背景雪花/光点动画 */
-        .snow {
-            position: absolute;
-            color: white;
-            font-size: 12px;
-            opacity: 0.6;
-            animation: fall linear infinite;
-        }
-        @keyframes fall {
-            0% {
-                transform: translateY(-10vh);
-            }
-            100% {
-                transform: translateY(110vh);
-            }
-        }
-
-        /* 3. 字幕容器+逐字显示样式 */
-        .wish-container {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 50px 30px;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.2);
-            max-width: 600px;
-            position: relative;
-            z-index: 10; /* 确保字幕在动画之上 */
-        }
-        /* 图片区域 */
-        .wish-img {
-            width: 100%;
-            height: 200px;
-            border-radius: 12px;
-            margin-bottom: 40px;
             overflow: hidden;
+            position: relative;
         }
-        .wish-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+
+        /* 背景光点：和截图里的浅白小点点一致 */
+        .bg-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.5); /* 半透明白色光点 */
+            border-radius: 4px;
+            animation: float 10s ease-in-out infinite;
         }
-        /* 字幕行样式（点阵感） */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-30px) translateX(10px);
+                opacity: 0.6;
+            }
+        }
+
+        /* 点阵字体样式：和截图完全匹配 */
         .text-line {
-            font-size: 32px;
+            font-size: 48px;
             font-weight: bold;
-            color: #ec4899;
-            margin: 20px 0;
-            letter-spacing: 8px; /* 点阵字间距 */
-        }
-        /* 倒计时数字样式（更大更突出） */
-        .countdown-line {
-            font-size: 60px;
-            font-weight: bold;
-            color: #ec4899;
+            color: white;
             margin: 30px 0;
+            letter-spacing: 12px; /* 点阵字间距 */
+            font-family: "Courier New", monospace; /* 等宽字体模拟点阵 */
+        }
+        /* 单个文字的点阵效果（小方块组成） */
+        .text-line span {
+            display: inline-block;
             opacity: 0;
             transform: scale(0.8);
-            transition: all 0.5s ease;
+            transition: all 0.6s ease;
+            /* 核心：用重复渐变模拟点阵 */
+            background: repeating-linear-gradient(
+                45deg,
+                white,
+                white 4px,
+                transparent 4px,
+                transparent 8px
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-line span.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* 倒计时数字样式（放大版点阵） */
+        .countdown-line {
+            font-size: 80px;
+            font-weight: bold;
+            color: white;
+            margin: 40px 0;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.6s ease;
+            /* 同样的点阵效果 */
+            background: repeating-linear-gradient(
+                45deg,
+                white,
+                white 6px,
+                transparent 6px,
+                transparent 12px
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         .countdown-line.show {
             opacity: 1;
             transform: scale(1);
         }
-        /* 单个文字元素：初始隐藏 */
-        .text-line span {
-            opacity: 0;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            transform: translateY(10px);
-        }
-        /* 显示状态 */
-        .text-line span.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
 
-        /* 4. 结尾文案样式 */
-        .love-text {
-            color: #ec4899;
-            font-size: 20px;
-            margin-top: 50px;
-            line-height: 2;
+        /* 容器透明：和背景融为一体 */
+        .wish-container {
+            padding: 20px;
+            position: relative;
+            z-index: 10;
         }
     </style>
 </head>
 <body>
-    <!-- 背景动画元素（自动生成多个） -->
-    <div class="bg-animate heart" style="top: 10%; left: 15%; animation-delay: 0s;"></div>
-    <div class="bg-animate square" style="top: 20%; right: 20%; animation-delay: 1s;"></div>
-    <div class="bg-animate heart" style="bottom: 15%; left: 25%; animation-delay: 2s;"></div>
-    <div class="bg-animate square" style="bottom: 25%; right: 10%; animation-delay: 3s;"></div>
+    <!-- 背景光点（自动生成） -->
+    <div class="bg-dot" style="left: 10%; top: 20%; animation-delay: 0s;"></div>
+    <div class="bg-dot" style="left: 80%; top: 30%; animation-delay: 1s;"></div>
+    <div class="bg-dot" style="left: 25%; top: 70%; animation-delay: 2s;"></div>
+    <div class="bg-dot" style="left: 75%; top: 15%; animation-delay: 3s;"></div>
 
-    <!-- 祝福容器 -->
+    <!-- 字幕容器（无图片） -->
     <div class="wish-container">
-        <!-- 你的图片（已适配仓库里的ppandtt.jpg） -->
-        <div class="wish-img">
-            <img src="ppandtt.jpg" alt="我们的甜蜜合照">
-        </div>
-
-        <!-- 新增：打开声音+准备提示 -->
-        <div class="text-line" id="line0">
-            <span>打</span><span>开</span><span>声</span><span>音</span><span>，</span><span>准</span><span>备</span><span>好</span><span>了</span><span>吗</span>
-        </div>
-        <!-- 倒计时数字 -->
-        <div class="countdown-line" id="count3">3</div>
-        <div class="countdown-line" id="count2">2</div>
-        <div class="countdown-line" id="count1">1</div>
-
-        <!-- 原有字幕 -->
+        <!-- 显示顺序：Hi宝贝→祝你→生日快乐→Happy Birthday→打开声音→准备好了吗→3→2→1 -->
         <div class="text-line" id="line1">
             <span>H</span><span>i</span><span>宝</span><span>贝</span>
         </div>
@@ -174,31 +129,32 @@
             <span>H</span><span>a</span><span>p</span><span>p</span><span>y</span>
             <span>B</span><span>i</span><span>r</span><span>t</span><span>h</span><span>d</span><span>a</span><span>y</span>
         </div>
-
-        <!-- 结尾文案 -->
-        <div class="love-text">
-            5201314，我爱你一生一世<br>
-            永远是你的专属温柔 —— 爱你的XX
+        <div class="text-line" id="line0">
+            <span>打</span><span>开</span><span>声</span><span>音</span>
         </div>
+        <div class="text-line" id="line5">
+            <span>准</span><span>备</span><span>好</span><span>了</span><span>吗</span>
+        </div>
+        <div class="countdown-line" id="count3">3</div>
+        <div class="countdown-line" id="count2">2</div>
+        <div class="countdown-line" id="count1">1</div>
     </div>
 
     <script>
-        // 1. 生成背景雪花动画
-        function createSnow() {
-            const snowCount = 30; // 雪花数量
-            for (let i = 0; i < snowCount; i++) {
-                const snow = document.createElement("div");
-                snow.className = "snow";
-                snow.textContent = "❄️";
-                // 随机位置+动画时长
-                snow.style.left = `${Math.random() * 100}vw`;
-                snow.style.animationDuration = `${5 + Math.random() * 10}s`;
-                snow.style.animationDelay = `${Math.random() * 5}s`;
-                document.body.appendChild(snow);
+        // 生成更多背景光点
+        function createDots() {
+            const dotCount = 50;
+            for (let i = 0; i < dotCount; i++) {
+                const dot = document.createElement("div");
+                dot.className = "bg-dot";
+                dot.style.left = `${Math.random() * 100}vw`;
+                dot.style.top = `${Math.random() * 100}vh`;
+                dot.style.animationDelay = `${Math.random() * 5}s`;
+                document.body.appendChild(dot);
             }
         }
 
-        // 2. 逐字显示字幕
+        // 逐字显示字幕
         function showTextLine(lineId, delayBetweenChars) {
             const line = document.getElementById(lineId);
             const chars = line.querySelectorAll("span");
@@ -209,44 +165,37 @@
             });
         }
 
-        // 3. 显示倒计时数字
-        function showCountdown(countId, delay) {
+        // 显示倒计时（自动隐藏）
+        function showCountdown(countId, showTime) {
+            const count = document.getElementById(countId);
+            count.classList.add("show");
             setTimeout(() => {
-                document.getElementById(countId).classList.add("show");
-            }, delay);
+                count.classList.remove("show");
+            }, showTime);
         }
 
-        // 4. 隐藏倒计时数字
-        function hideCountdown(countId, delay) {
-            setTimeout(() => {
-                document.getElementById(countId).classList.remove("show");
-            }, delay);
-        }
-
-        // 5. 按顺序启动动画（精准控时，仪式感拉满）
+        // 按你的要求顺序启动动画
         window.onload = function() {
-            createSnow(); // 先启动背景雪花
-
-            // 第一步：显示“打开声音，准备好了吗”（每个字间隔300ms）
-            setTimeout(() => showTextLine("line0", 300), 500);
+            createDots(); // 加载背景光点
             
-            // 第二步：倒计时3（显示1秒后隐藏）
-            showCountdown("count3", 4000);
-            hideCountdown("count3", 5000);
-            
-            // 第三步：倒计时2（显示1秒后隐藏）
-            showCountdown("count2", 5000);
-            hideCountdown("count2", 6000);
-            
-            // 第四步：倒计时1（显示1秒后隐藏）
-            showCountdown("count1", 6000);
-            hideCountdown("count1", 7000);
-            
-            // 第五步：依次显示生日字幕
-            setTimeout(() => showTextLine("line1", 300), 7500);  // Hi宝贝
-            setTimeout(() => showTextLine("line2", 300), 9000);  // 祝你
-            setTimeout(() => showTextLine("line3", 300), 10500); // 生日快乐
-            setTimeout(() => showTextLine("line4", 200), 12000); // Happy Birthday
+            // 1. Hi宝贝（每个字间隔500ms）
+            setTimeout(() => showTextLine("line1", 500), 500);
+            // 2. 祝你
+            setTimeout(() => showTextLine("line2", 500), 3000);
+            // 3. 生日快乐
+            setTimeout(() => showTextLine("line3", 500), 4500);
+            // 4. Happy Birthday（每个字母间隔300ms）
+            setTimeout(() => showTextLine("line4", 300), 7000);
+            // 5. 打开声音
+            setTimeout(() => showTextLine("line0", 500), 10000);
+            // 6. 准备好了吗
+            setTimeout(() => showTextLine("line5", 500), 12500);
+            // 7. 倒计时3（显示1秒）
+            setTimeout(() => showCountdown("count3", 1000), 15000);
+            // 8. 倒计时2（显示1秒）
+            setTimeout(() => showCountdown("count2", 1000), 16500);
+            // 9. 倒计时1（显示1秒）
+            setTimeout(() => showCountdown("count1", 1000), 18000);
         };
     </script>
 </body>
