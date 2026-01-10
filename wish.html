@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>给萍萍的专属惊喜 ❤️</title>
     <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", "PingFang SC", sans-serif;
+        }
+
+        /* 页面背景 */
         body {
             background: linear-gradient(135deg, #fdf2f8, #f3e8ff);
             min-height: 100vh;
@@ -13,7 +22,34 @@
             align-items: center;
             text-align: center;
             padding: 20px;
+            position: relative;
         }
+
+        /* 背景爱心装饰 */
+        body::before {
+            content: "❤️";
+            font-size: 30px;
+            position: absolute;
+            top: 8%;
+            right: 10%;
+            opacity: 0.2;
+            animation: float 8s ease-in-out infinite;
+        }
+        body::after {
+            content: "🎂";
+            font-size: 35px;
+            position: absolute;
+            bottom: 8%;
+            left: 10%;
+            opacity: 0.2;
+            animation: float 8s ease-in-out infinite 2s;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+        }
+
+        /* 祝福容器 */
         .wish-container {
             background: white;
             padding: 50px 30px;
@@ -21,22 +57,37 @@
             box-shadow: 0 10px 30px rgba(236, 72, 153, 0.15);
             max-width: 500px;
         }
+
+        /* 标题样式 */
         .wish-title {
             color: #ec4899;
             font-size: 30px;
             margin-bottom: 20px;
         }
+
+        /* 祝福图片 */
+        .wish-img {
+            width: 100%;
+            height: 200px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .wish-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 祝福文案 */
         .wish-text {
             color: #6b7280;
             font-size: 18px;
             line-height: 2;
             margin-bottom: 30px;
         }
-        .wish-img {
-            width: 100%;
-            border-radius: 12px;
-            margin-bottom: 30px;
-        }
+
+        /* 爱心文案 */
         .love-text {
             color: #ec4899;
             font-size: 22px;
@@ -47,16 +98,21 @@
 <body>
     <div class="wish-container">
         <h1 class="wish-title">我的萍萍生日快乐！🎊</h1>
-        <!-- 可以再放一张照片 -->
-        <img class="wish-img" src="https://另一张图片链接" alt="我们的合照">
+        
+        <!-- 图片路径已改为仓库根目录的ppandtt.jpg -->
+        <div class="wish-img">
+            <img src="ppandtt.jpg" alt="我们的甜蜜合照">
+        </div>
+        
         <p class="wish-text">
             亲爱的萍萍：<br>
-            今天是你的生日，想告诉你——<br>
-            你是我生活里最甜的糖，是我眼里最亮的光<br>
+            今天是属于你的特别日子，想把所有温柔和美好都给你～<br>
+            你是我藏在微风里的喜欢，是我漫漫长路里的星光<br>
             5201314，我爱你一生一世<br>
-            新的一岁，我会一直陪着你，把所有温柔都给你 ❤️
+            新的一岁，愿你永远开心、永远被爱，我会一直陪着你，把最好的都给你 ❤️
         </p>
-        <p class="love-text">永远爱你的XX（你的名字）</p>
+        
+        <p class="love-text">永远爱你的那个他 💋</p>
     </div>
 </body>
 </html>
