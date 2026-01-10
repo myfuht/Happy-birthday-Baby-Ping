@@ -1,4 +1,4 @@
-<!DOCTYPE html> <!-- 修正结构：这个声明会自动隐藏，不会显示在页面上 -->
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -24,7 +24,7 @@
             overflow: hidden;
         }
 
-        /* 背景爱心装饰 */
+        /* 背景爱心装饰（浮动动效） */
         body::before, body::after {
             content: "❤️";
             font-size: 20px;
@@ -47,7 +47,7 @@
             50% { transform: translateY(-20px); }
         }
 
-        /* 登录卡片 */
+        /* 登录卡片容器 */
         .login-card {
             width: 450px;
             background: white;
@@ -70,7 +70,7 @@
             padding: 0 15px;
         }
 
-        /* 图片区域（这里替换成你想要的图片） */
+        /* 生日图片展示区域 */
         .birthday-img {
             width: 100%;
             height: 180px;
@@ -81,10 +81,10 @@
         .birthday-img img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover; /* 保证图片不变形 */
         }
 
-        /* 标题 */
+        /* 标题样式 */
         .login-title {
             color: #ec4899;
             font-size: 26px;
@@ -122,7 +122,7 @@
             box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.1);
         }
 
-        /* 错误提示 */
+        /* 错误提示样式 */
         .error-tip {
             color: #ef4444;
             font-size: 12px;
@@ -153,9 +153,9 @@
 </head>
 <body>
     <div class="login-card">
-        <!-- 图片区域：替换src里的链接为你的图片链接 -->
+        <!-- 图片路径已改为仓库根目录的ppandtt.jpg -->
         <div class="birthday-img">
-            <img src="https://你自己的图片链接" alt="给萍萍的生日照片">
+            <img src="ppandtt.jpg" alt="给萍萍的生日专属照片">
         </div>
 
         <h1 class="login-title">亲爱的萍萍🎂</h1>
@@ -177,19 +177,21 @@
     </div>
 
     <script>
-        // 验证账号密码并跳转到下一个界面
+        // 验证账号密码并跳转到祝福页（wish.html）
         function checkLogin() {
             const username = document.getElementById("username").value.trim();
             const password = document.getElementById("password").value.trim();
             const errorTip = document.getElementById("errorTip");
             
+            // 隐藏错误提示
             errorTip.style.display = "none";
 
-            // 验证账号：挚爱萍萍，密码：5201314
+            // 验证规则：账号=挚爱萍萍，密码=5201314
             if (username === "挚爱萍萍" && password === "5201314") {
-                // 跳转到下一个界面（next.html是你要创建的新页面）
-                window.location.href = "next.html";
+                // 跳转到同目录下的wish.html
+                window.location.href = "wish.html";
             } else {
+                // 显示错误提示
                 errorTip.style.display = "block";
             }
         }
