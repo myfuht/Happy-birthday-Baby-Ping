@@ -5,104 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>给萍萍的专属惊喜 ❤️</title>
     <style>
-        /* 全局样式：匹配截图的浅粉色背景 */
+        /* 全局样式：保证页面全屏+内容绝对居中 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         body {
-            background: #ffc2d1; /* 和截图一致的浅粉色背景 */
+            background: #ffc2d1; /* 匹配截图的浅粉色背景 */
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            text-align: center;
             overflow: hidden;
             position: relative;
         }
 
-        /* 背景光点：和截图里的浅白小点点一致 */
+        /* 背景光点：浅白小点，不干扰文字 */
         .bg-dot {
             position: absolute;
-            width: 8px;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.5); /* 半透明白色光点 */
-            border-radius: 4px;
-            animation: float 10s ease-in-out infinite;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+            z-index: 1;
         }
         @keyframes float {
-            0%, 100% {
-                transform: translateY(0) translateX(0);
-                opacity: 0.3;
-            }
-            50% {
-                transform: translateY(-30px) translateX(10px);
-                opacity: 0.6;
-            }
+            0%, 100% { transform: translateY(0); opacity: 0.4; }
+            50% { transform: translateY(-20px); opacity: 0.8; }
         }
 
-        /* 点阵字体样式：和截图完全匹配 */
-        .text-line {
-            font-size: 48px;
-            font-weight: bold;
-            color: white;
-            margin: 30px 0;
-            letter-spacing: 12px; /* 点阵字间距 */
-            font-family: "Courier New", monospace; /* 等宽字体模拟点阵 */
-        }
-        /* 单个文字的点阵效果（小方块组成） */
-        .text-line span {
-            display: inline-block;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.6s ease;
-            /* 核心：用重复渐变模拟点阵 */
-            background: repeating-linear-gradient(
-                45deg,
-                white,
-                white 4px,
-                transparent 4px,
-                transparent 8px
-            );
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .text-line span.show {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* 倒计时数字样式（放大版点阵） */
-        .countdown-line {
-            font-size: 80px;
-            font-weight: bold;
-            color: white;
-            margin: 40px 0;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.6s ease;
-            /* 同样的点阵效果 */
-            background: repeating-linear-gradient(
-                45deg,
-                white,
-                white 6px,
-                transparent 6px,
-                transparent 12px
-            );
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .countdown-line.show {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* 容器透明：和背景融为一体 */
+        /* 核心容器：始终居中，只显示当前内容 */
         .wish-container {
-            padding: 20px;
             position: relative;
             z-index: 10;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* 文字样式：清晰白色实心+大字号+居中，默认隐藏 */
+        .text-item {
+            font-size: 56px;
+            font-weight: bold;
+            color: #ffffff; /* 纯白色实心字体，解决模糊问题 */
+            font-family: "微软雅黑", "PingFang SC", sans-serif; /* 清晰无锯齿字体 */
+            letter-spacing: 15px; /* 匹配截图的字间距 */
+            display: none; /* 默认隐藏 */
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.8s ease;
+            /* 强制居中 */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+
+        /* 倒计时数字：更大更醒目，默认隐藏 */
+        .count-item {
+            font-size: 90px;
+            font-weight: bold;
+            color: #ffffff;
+            font-family: "微软雅黑", "PingFang SC", sans-serif;
+            display: none; /* 默认隐藏 */
+            opacity: 0;
+            transition: all 0.8s ease;
+            /* 强制居中 */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+
+        /* 显示状态：淡入+缩放，清晰醒目 */
+        .text-item.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .count-item.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
         }
     </style>
 </head>
@@ -113,89 +98,66 @@
     <div class="bg-dot" style="left: 25%; top: 70%; animation-delay: 2s;"></div>
     <div class="bg-dot" style="left: 75%; top: 15%; animation-delay: 3s;"></div>
 
-    <!-- 字幕容器（无图片） -->
+    <!-- 核心容器：所有内容都在这里，始终居中 -->
     <div class="wish-container">
-        <!-- 显示顺序：Hi宝贝→祝你→生日快乐→Happy Birthday→打开声音→准备好了吗→3→2→1 -->
-        <div class="text-line" id="line1">
-            <span>H</span><span>i</span><span>宝</span><span>贝</span>
-        </div>
-        <div class="text-line" id="line2">
-            <span>祝</span><span>你</span>
-        </div>
-        <div class="text-line" id="line3">
-            <span>生</span><span>日</span><span>快</span><span>乐</span>
-        </div>
-        <div class="text-line" id="line4">
-            <span>H</span><span>a</span><span>p</span><span>p</span><span>y</span>
-            <span>B</span><span>i</span><span>r</span><span>t</span><span>h</span><span>d</span><span>a</span><span>y</span>
-        </div>
-        <div class="text-line" id="line0">
-            <span>打</span><span>开</span><span>声</span><span>音</span>
-        </div>
-        <div class="text-line" id="line5">
-            <span>准</span><span>备</span><span>好</span><span>了</span><span>吗</span>
-        </div>
-        <div class="countdown-line" id="count3">3</div>
-        <div class="countdown-line" id="count2">2</div>
-        <div class="countdown-line" id="count1">1</div>
+        <!-- 按顺序：Hi宝宝→祝你→生日快乐→Happy Birthday→打开声音→准备好了吗→3→2→1 -->
+        <div class="text-item" id="item1">Hi宝宝</div>
+        <div class="text-item" id="item2">祝你</div>
+        <div class="text-item" id="item3">生日快乐</div>
+        <div class="text-item" id="item4">Happy Birthday</div>
+        <div class="text-item" id="item5">打开声音</div>
+        <div class="text-item" id="item6">准备好了吗</div>
+        <div class="count-item" id="count3">3</div>
+        <div class="count-item" id="count2">2</div>
+        <div class="count-item" id="count1">1</div>
     </div>
 
     <script>
-        // 生成更多背景光点
+        // 生成更多背景光点，增加氛围感
         function createDots() {
-            const dotCount = 50;
+            const dotCount = 40;
             for (let i = 0; i < dotCount; i++) {
                 const dot = document.createElement("div");
                 dot.className = "bg-dot";
                 dot.style.left = `${Math.random() * 100}vw`;
                 dot.style.top = `${Math.random() * 100}vh`;
-                dot.style.animationDelay = `${Math.random() * 5}s`;
+                dot.style.animationDelay = `${Math.random() * 6}s`;
                 document.body.appendChild(dot);
             }
         }
 
-        // 逐字显示字幕
-        function showTextLine(lineId, delayBetweenChars) {
-            const line = document.getElementById(lineId);
-            const chars = line.querySelectorAll("span");
-            chars.forEach((char, index) => {
-                setTimeout(() => {
-                    char.classList.add("show");
-                }, index * delayBetweenChars);
-            });
-        }
-
-        // 显示倒计时（自动隐藏）
-        function showCountdown(countId, showTime) {
-            const count = document.getElementById(countId);
-            count.classList.add("show");
+        // 显示指定元素，隐藏其他所有元素
+        function showItem(itemId, showTime) {
+            // 隐藏所有文字和倒计时
+            const allTextItems = document.querySelectorAll('.text-item');
+            const allCountItems = document.querySelectorAll('.count-item');
+            allTextItems.forEach(item => item.classList.remove('show'));
+            allCountItems.forEach(item => item.classList.remove('show'));
+            
+            // 显示当前元素
+            const currentItem = document.getElementById(itemId);
+            currentItem.classList.add('show');
+            
+            // 显示指定时间后隐藏
             setTimeout(() => {
-                count.classList.remove("show");
+                currentItem.classList.remove('show');
             }, showTime);
         }
 
-        // 按你的要求顺序启动动画
+        // 按顺序执行：每个内容显示2秒，然后消失，显示下一个
         window.onload = function() {
             createDots(); // 加载背景光点
-            
-            // 1. Hi宝贝（每个字间隔500ms）
-            setTimeout(() => showTextLine("line1", 500), 500);
-            // 2. 祝你
-            setTimeout(() => showTextLine("line2", 500), 3000);
-            // 3. 生日快乐
-            setTimeout(() => showTextLine("line3", 500), 4500);
-            // 4. Happy Birthday（每个字母间隔300ms）
-            setTimeout(() => showTextLine("line4", 300), 7000);
-            // 5. 打开声音
-            setTimeout(() => showTextLine("line0", 500), 10000);
-            // 6. 准备好了吗
-            setTimeout(() => showTextLine("line5", 500), 12500);
-            // 7. 倒计时3（显示1秒）
-            setTimeout(() => showCountdown("count3", 1000), 15000);
-            // 8. 倒计时2（显示1秒）
-            setTimeout(() => showCountdown("count2", 1000), 16500);
-            // 9. 倒计时1（显示1秒）
-            setTimeout(() => showCountdown("count1", 1000), 18000);
+
+            // 严格按你的顺序执行，每个内容显示2秒（可调整showTime的数值）
+            setTimeout(() => showItem("item1", 2000), 500);    // Hi宝宝（显示2秒）
+            setTimeout(() => showItem("item2", 2000), 3000);    // 祝你（显示2秒）
+            setTimeout(() => showItem("item3", 2000), 5500);    // 生日快乐（显示2秒）
+            setTimeout(() => showItem("item4", 2000), 8000);    // Happy Birthday（显示2秒）
+            setTimeout(() => showItem("item5", 2000), 10500);   // 打开声音（显示2秒）
+            setTimeout(() => showItem("item6", 2000), 13000);   // 准备好了吗（显示2秒）
+            setTimeout(() => showItem("count3", 1000), 15500);  // 3（显示1秒）
+            setTimeout(() => showItem("count2", 1000), 17000);  // 2（显示1秒）
+            setTimeout(() => showItem("count1", 1000), 18500);  // 1（显示1秒）
         };
     </script>
 </body>
