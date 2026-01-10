@@ -5,17 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>给萍萍的专属惊喜 ❤️</title>
     <style>
-        /* 全局样式重置 */
+        /* 全局重置+背景基础样式 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: "微软雅黑", "PingFang SC", sans-serif;
         }
-
-        /* 页面背景 */
         body {
-            background: linear-gradient(135deg, #fdf2f8, #f3e8ff);
+            background: linear-gradient(135deg, #ffd6e0, #ffc2d1);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -23,54 +21,72 @@
             text-align: center;
             padding: 20px;
             position: relative;
+            overflow: hidden; /* 隐藏超出屏幕的动画元素 */
         }
 
-        /* 背景爱心装饰 */
-        body::before {
-            content: "❤️";
-            font-size: 30px;
+        /* 1. 背景动画：浮动爱心+方块 */
+        .bg-animate {
             position: absolute;
-            top: 8%;
-            right: 10%;
+            border-radius: 8px;
             opacity: 0.2;
             animation: float 8s ease-in-out infinite;
         }
-        body::after {
-            content: "🎂";
-            font-size: 35px;
-            position: absolute;
-            bottom: 8%;
-            left: 10%;
-            opacity: 0.2;
-            animation: float 8s ease-in-out infinite 2s;
+        /* 爱心形状（用伪元素实现） */
+        .bg-animate.heart::before {
+            content: "❤️";
+            font-size: 20px;
         }
+        /* 方块形状 */
+        .bg-animate.square {
+            width: 30px;
+            height: 30px;
+            background: white;
+        }
+        /* 浮动动画 */
         @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(10deg); }
+            0%, 100% { 
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.2;
+            }
+            50% { 
+                transform: translateY(-50px) rotate(10deg);
+                opacity: 0.4;
+            }
         }
 
-        /* 祝福容器 */
+        /* 2. 背景雪花/光点动画 */
+        .snow {
+            position: absolute;
+            color: white;
+            font-size: 12px;
+            opacity: 0.6;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh);
+            }
+            100% {
+                transform: translateY(110vh);
+            }
+        }
+
+        /* 3. 字幕容器+逐字显示样式 */
         .wish-container {
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
             padding: 50px 30px;
             border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.15);
-            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.2);
+            max-width: 600px;
+            position: relative;
+            z-index: 10; /* 确保字幕在动画之上 */
         }
-
-        /* 标题样式 */
-        .wish-title {
-            color: #ec4899;
-            font-size: 30px;
-            margin-bottom: 20px;
-        }
-
-        /* 祝福图片 */
+        /* 图片区域 */
         .wish-img {
             width: 100%;
             height: 200px;
             border-radius: 12px;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             overflow: hidden;
         }
         .wish-img img {
@@ -78,41 +94,160 @@
             height: 100%;
             object-fit: cover;
         }
-
-        /* 祝福文案 */
-        .wish-text {
-            color: #6b7280;
-            font-size: 18px;
-            line-height: 2;
-            margin-bottom: 30px;
+        /* 字幕行样式（点阵感） */
+        .text-line {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ec4899;
+            margin: 20px 0;
+            letter-spacing: 8px; /* 点阵字间距 */
+        }
+        /* 倒计时数字样式（更大更突出） */
+        .countdown-line {
+            font-size: 60px;
+            font-weight: bold;
+            color: #ec4899;
+            margin: 30px 0;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s ease;
+        }
+        .countdown-line.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+        /* 单个文字元素：初始隐藏 */
+        .text-line span {
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            transform: translateY(10px);
+        }
+        /* 显示状态 */
+        .text-line span.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        /* 爱心文案 */
+        /* 4. 结尾文案样式 */
         .love-text {
             color: #ec4899;
-            font-size: 22px;
-            font-weight: bold;
+            font-size: 20px;
+            margin-top: 50px;
+            line-height: 2;
         }
     </style>
 </head>
 <body>
+    <!-- 背景动画元素（自动生成多个） -->
+    <div class="bg-animate heart" style="top: 10%; left: 15%; animation-delay: 0s;"></div>
+    <div class="bg-animate square" style="top: 20%; right: 20%; animation-delay: 1s;"></div>
+    <div class="bg-animate heart" style="bottom: 15%; left: 25%; animation-delay: 2s;"></div>
+    <div class="bg-animate square" style="bottom: 25%; right: 10%; animation-delay: 3s;"></div>
+
+    <!-- 祝福容器 -->
     <div class="wish-container">
-        <h1 class="wish-title">我的萍萍生日快乐！🎊</h1>
-        
-        <!-- 图片路径已改为仓库根目录的ppandtt.jpg -->
+        <!-- 你的图片（已适配仓库里的ppandtt.jpg） -->
         <div class="wish-img">
             <img src="ppandtt.jpg" alt="我们的甜蜜合照">
         </div>
-        
-        <p class="wish-text">
-            亲爱的萍萍：<br>
-            今天是属于你的特别日子，想把所有温柔和美好都给你～<br>
-            你是我藏在微风里的喜欢，是我漫漫长路里的星光<br>
+
+        <!-- 新增：打开声音+准备提示 -->
+        <div class="text-line" id="line0">
+            <span>打</span><span>开</span><span>声</span><span>音</span><span>，</span><span>准</span><span>备</span><span>好</span><span>了</span><span>吗</span>
+        </div>
+        <!-- 倒计时数字 -->
+        <div class="countdown-line" id="count3">3</div>
+        <div class="countdown-line" id="count2">2</div>
+        <div class="countdown-line" id="count1">1</div>
+
+        <!-- 原有字幕 -->
+        <div class="text-line" id="line1">
+            <span>H</span><span>i</span><span>宝</span><span>贝</span>
+        </div>
+        <div class="text-line" id="line2">
+            <span>祝</span><span>你</span>
+        </div>
+        <div class="text-line" id="line3">
+            <span>生</span><span>日</span><span>快</span><span>乐</span>
+        </div>
+        <div class="text-line" id="line4">
+            <span>H</span><span>a</span><span>p</span><span>p</span><span>y</span>
+            <span>B</span><span>i</span><span>r</span><span>t</span><span>h</span><span>d</span><span>a</span><span>y</span>
+        </div>
+
+        <!-- 结尾文案 -->
+        <div class="love-text">
             5201314，我爱你一生一世<br>
-            新的一岁，愿你永远开心、永远被爱，我会一直陪着你，把最好的都给你 ❤️
-        </p>
-        
-        <p class="love-text">永远爱你的那个他 💋</p>
+            永远是你的专属温柔 —— 爱你的XX
+        </div>
     </div>
+
+    <script>
+        // 1. 生成背景雪花动画
+        function createSnow() {
+            const snowCount = 30; // 雪花数量
+            for (let i = 0; i < snowCount; i++) {
+                const snow = document.createElement("div");
+                snow.className = "snow";
+                snow.textContent = "❄️";
+                // 随机位置+动画时长
+                snow.style.left = `${Math.random() * 100}vw`;
+                snow.style.animationDuration = `${5 + Math.random() * 10}s`;
+                snow.style.animationDelay = `${Math.random() * 5}s`;
+                document.body.appendChild(snow);
+            }
+        }
+
+        // 2. 逐字显示字幕
+        function showTextLine(lineId, delayBetweenChars) {
+            const line = document.getElementById(lineId);
+            const chars = line.querySelectorAll("span");
+            chars.forEach((char, index) => {
+                setTimeout(() => {
+                    char.classList.add("show");
+                }, index * delayBetweenChars);
+            });
+        }
+
+        // 3. 显示倒计时数字
+        function showCountdown(countId, delay) {
+            setTimeout(() => {
+                document.getElementById(countId).classList.add("show");
+            }, delay);
+        }
+
+        // 4. 隐藏倒计时数字
+        function hideCountdown(countId, delay) {
+            setTimeout(() => {
+                document.getElementById(countId).classList.remove("show");
+            }, delay);
+        }
+
+        // 5. 按顺序启动动画（精准控时，仪式感拉满）
+        window.onload = function() {
+            createSnow(); // 先启动背景雪花
+
+            // 第一步：显示“打开声音，准备好了吗”（每个字间隔300ms）
+            setTimeout(() => showTextLine("line0", 300), 500);
+            
+            // 第二步：倒计时3（显示1秒后隐藏）
+            showCountdown("count3", 4000);
+            hideCountdown("count3", 5000);
+            
+            // 第三步：倒计时2（显示1秒后隐藏）
+            showCountdown("count2", 5000);
+            hideCountdown("count2", 6000);
+            
+            // 第四步：倒计时1（显示1秒后隐藏）
+            showCountdown("count1", 6000);
+            hideCountdown("count1", 7000);
+            
+            // 第五步：依次显示生日字幕
+            setTimeout(() => showTextLine("line1", 300), 7500);  // Hi宝贝
+            setTimeout(() => showTextLine("line2", 300), 9000);  // 祝你
+            setTimeout(() => showTextLine("line3", 300), 10500); // 生日快乐
+            setTimeout(() => showTextLine("line4", 200), 12000); // Happy Birthday
+        };
+    </script>
 </body>
 </html>
