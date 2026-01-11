@@ -9,7 +9,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "微软雅黑", "PingFang SC", sans-serif;
+            font-family: "微软雅黑", "PingFang SC", "幼圆", sans-serif; /* 更女生化的字体 */
         }
 
         body {
@@ -22,11 +22,11 @@
             overflow: hidden;
         }
 
-        /* 背景爱心装饰 */
+        /* 背景爱心装饰 - 更粉嫩 */
         .heart {
             position: absolute;
             font-size: 20px;
-            color: #ec4899;
+            color: #f472b6;
             opacity: 0.3;
             animation: float 6s ease-in-out infinite;
         }
@@ -40,13 +40,13 @@
             50% { transform: translateY(-20px); }
         }
 
-        /* 登录卡片 */
+        /* 登录卡片 - 更圆润温柔 */
         .login-card {
             width: 450px;
             background: white;
             padding: 45px 35px;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.15);
+            border-radius: 30px; /* 更圆润 */
+            box-shadow: 0 10px 40px rgba(244, 114, 182, 0.18);
             position: relative;
             text-align: center;
         }
@@ -62,25 +62,33 @@
             padding: 0 15px;
         }
 
-        /* 图片区域 */
+        /* 图片区域 - 优化图片展示 */
         .birthday-img {
             width: 100%;
             height: 180px;
             margin-bottom: 25px;
-            border-radius: 12px;
+            border-radius: 18px; /* 更圆润 */
             overflow: hidden;
-            background: #fce7f3;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #a855f7;
+            box-shadow: 0 4px 15px rgba(244, 114, 182, 0.1);
         }
 
-        /* 标题样式 */
+        .birthday-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 保持图片比例 */
+            transition: transform 0.5s ease;
+        }
+
+        .birthday-img img:hover {
+            transform: scale(1.05); /* hover轻微放大 */
+        }
+
+        /* 标题样式 - 更甜美 */
         .login-title {
             color: #ec4899;
-            font-size: 26px;
+            font-size: 28px;
             margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(236, 72, 153, 0.1);
         }
 
         .login-subtitle {
@@ -88,9 +96,10 @@
             font-size: 16px;
             margin-bottom: 35px;
             font-weight: normal;
+            letter-spacing: 1px;
         }
 
-        /* 输入框 */
+        /* 输入框 - 更温柔 */
         .input-group {
             margin-bottom: 20px;
             text-align: left;
@@ -99,23 +108,26 @@
         .input-group label {
             display: block;
             margin-bottom: 8px;
-            color: #6b7280;
+            color: #8b5cf6;
             font-size: 14px;
+            font-weight: 500;
         }
 
         .input-group input {
             width: 100%;
             padding: 12px 15px;
             border: 2px solid #fce7f3;
-            border-radius: 12px;
+            border-radius: 15px; /* 更圆润 */
             font-size: 15px;
             transition: all 0.3s ease;
+            background: #fef7fb;
         }
 
         .input-group input:focus {
             outline: none;
             border-color: #ec4899;
             box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.1);
+            background: white;
         }
 
         /* 错误提示 */
@@ -127,24 +139,25 @@
             text-align: center;
         }
 
-        /* 登录按钮 */
+        /* 登录按钮 - 更甜美 */
         .login-btn {
             width: 100%;
             padding: 14px;
             background: linear-gradient(90deg, #ec4899, #a855f7);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 15px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.2);
         }
 
         .login-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(236, 72, 153, 0.2);
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.25);
         }
     </style>
 </head>
@@ -155,9 +168,9 @@
     <div class="heart">❤️</div>
 
     <div class="login-card">
+        <!-- 替换为你的图片路径，确保图片和html同目录 -->
         <div class="birthday-img">
-            <span>专属生日回忆 💖</span>
-            <!-- 替换为你的图片：<img src="ppandtt.jpg" alt="给萍萍的生日专属照片"> -->
+            <img src="ppandtt.jpg" alt="给萍萍的生日专属照片">
         </div>
 
         <h1 class="login-title">亲爱的萍萍🎂</h1>
