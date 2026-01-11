@@ -9,15 +9,20 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: "微软雅黑", "PingFang SC", sans-serif;
         }
         body {
-            background: #ffc2d1; /* 浅粉色背景 */
+            background: #ffc2d1; /* 统一粉色背景 */
             min-height: 100vh;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* 点击提示：确保能看到 */
+        /* 1. 初始点击提示 */
         #clickTip {
             font-size: 40px;
             color: #fff;
@@ -31,57 +36,126 @@
             z-index: 100;
         }
 
-        /* 字幕容器：全屏覆盖，确保字幕在最上层 */
-        #wishContainer {
+        /* 2. 字幕样式（Hi宝宝→321） */
+        #subtitleContainer {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 99;
-            display: none; /* 初始隐藏 */
+            z-index: 90;
+            display: none;
         }
-
-        /* 所有字幕/数字：默认隐藏，显示时强制居中+醒目 */
         .text-item, .count-item {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             font-weight: bold;
-            color: #ffffff; /* 纯白色，和粉色背景对比强烈 */
-            text-shadow: 0 0 10px #ff0080; /* 加阴影，确保看得见 */
-            display: none; /* 默认隐藏 */
+            color: #ffffff;
+            text-shadow: 0 0 10px #ff0080;
+            display: none;
         }
-
-        /* 普通字幕样式 */
         .text-item {
             font-size: 60px;
             letter-spacing: 15px;
         }
-
-        /* 倒计时数字样式 */
         .count-item {
             font-size: 100px;
         }
-
-        /* 显示类：强制显示，无动画也能看到（先保证显示，再谈动画） */
         .show {
             display: block !important;
+        }
+
+        /* 3. 蛋糕动画样式 */
+        .cake-part {
+            display: none;
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 80;
+        }
+        .base { width: 180px; height: 10px; background: #f0e6e0; border-radius: 2px; }
+        .layer1 { width: 160px; height: 25px; background: #f9e4b7; border-radius: 2px; margin-top: 5px; }
+        .layer2 { width: 140px; height: 25px; background: #b9d4e8; border-radius: 2px; margin-top: 5px; }
+        .cream { 
+            width: 180px; height: 20px; background: #f8f8f8; border-radius: 10px 10px 2px 2px; 
+            margin-top: 5px; position: relative;
+        }
+        .cream::after, .cream::before {
+            content: ""; position: absolute; bottom: -10px; width: 15px; height: 15px;
+            background: #f8f8f8; border-radius: 0 0 15px 15px;
+        }
+        .cream::after { left: 20px; }
+        .cream::before { left: 60px; }
+        .candle { 
+            width: 10px; height: 30px; background: #ffffff; margin: 0 auto; margin-top: -5px;
+            border-radius: 2px 2px 0 0; position: relative;
+        }
+        .candle::after {
+            content: ""; position: absolute; top: -10px; left: 3px;
+            width: 4px; height: 8px; background: #ffd700; border-radius: 50%;
+            box-shadow: 0 0 10px #ffd700;
+        }
+        .flame {
+            width: 8px; height: 15px; background: #ff9900; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            margin: 0 auto; margin-top: -15px; box-shadow: 0 0 10px #ff9900;
+            animation: burn 1s infinite alternate;
+        }
+        @keyframes burn {
+            0% { transform: scale(0.9); }
+            100% { transform: scale(1.1); }
+        }
+
+        /* 4. 问答交互样式 */
+        .question-text {
+            font-size: 24px; color: #ffffff; display: none; z-index: 80;
+            position: absolute; top: 45%; left: 50%; transform: translateX(-50%);
+        }
+        .birthday-text {
+            font-size: 30px; color: #555555; font-style: italic; display: none; z-index: 80;
+            position: absolute; top: 55%; left: 50%; transform: translateX(-50%);
+        }
+        .square {
+            width: 40px; height: 40px; background: rgba(255, 255, 255, 0.3);
+            position: absolute; animation: float 5s infinite ease-in-out; display: none; z-index: 70;
+        }
+        .square1 { top: 20%; left: 20%; animation-delay: 0s; }
+        .square2 { top: 15%; right: 20%; animation-delay: 1s; }
+        .square3 { bottom: 20%; left: 25%; animation-delay: 2s; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        .btn-group {
+            position: absolute; bottom: 20%; display: flex; gap: 80px; display: none; z-index: 80;
+        }
+        .btn {
+            padding: 12px 30px; border: 2px solid #ffffff; border-radius: 30px;
+            background: transparent; color: #ffffff; font-size: 18px; cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background: #ffffff; color: #ffc2d1;
+        }
+        .tip-text {
+            color: #ffffff; font-size: 20px; display: none; z-index: 80;
+            position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
         }
     </style>
 </head>
 <body>
-    <!-- 点击提示 -->
-    <div id="clickTip">点击页面开始祝福 ❤️</div>
-
-    <!-- 音频 -->
+    <!-- 音频（匹配仓库根目录的jimo.mp3） -->
     <audio id="birthdayAudio" preload="auto">
         <source src="jimo.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- 字幕容器（所有字幕ID确保正确） -->
-    <div id="wishContainer">
+    <!-- 1. 初始点击提示 -->
+    <div id="clickTip">点击页面开始祝福 ❤️</div>
+
+    <!-- 2. 字幕容器（Hi宝宝→321） -->
+    <div id="subtitleContainer">
         <div class="text-item" id="item1">Hi宝宝</div>
         <div class="text-item" id="item2">祝你</div>
         <div class="text-item" id="item3">生日快乐</div>
@@ -93,32 +167,44 @@
         <div class="count-item" id="count1">1</div>
     </div>
 
+    <!-- 3. 蛋糕动画元素 -->
+    <div class="cake-part base" id="base"></div>
+    <div class="cake-part layer1" id="layer1"></div>
+    <div class="cake-part layer2" id="layer2"></div>
+    <div class="cake-part cream" id="cream"></div>
+    <div class="cake-part candle" id="candle"></div>
+    <div class="cake-part flame" id="flame"></div>
+
+    <!-- 4. 问答交互元素 -->
+    <div class="question-text" id="questionText">今天的你快乐吗？</div>
+    <div class="birthday-text" id="birthdayText">Happy Birthday</div>
+    <div class="square square1" id="square1"></div>
+    <div class="square square2" id="square2"></div>
+    <div class="square square3" id="square3"></div>
+    <div class="btn-group" id="btnGroup">
+        <button class="btn" id="happyBtn">非常快乐</button>
+        <button class="btn" id="unhappyBtn">不太开心</button>
+    </div>
+    <div class="tip-text" id="tipText">萍宝宝不允许不开心哦~请点击非常快乐</div>
+
     <script>
-        // 显示单个元素，隐藏其他
+        // 显示单个字幕/数字
         function showItem(itemId, showTime) {
-            // 隐藏所有元素
             const allItems = document.querySelectorAll('.text-item, .count-item');
             allItems.forEach(item => item.classList.remove('show'));
-            // 显示当前元素
             const item = document.getElementById(itemId);
             if (item) {
                 item.classList.add('show');
-                console.log(`显示：${itemId}`); // 调试日志，看是否触发
-                // 显示指定时间后隐藏
-                setTimeout(() => {
-                    item.classList.remove('show');
-                    console.log(`隐藏：${itemId}`);
-                }, showTime);
+                setTimeout(() => item.classList.remove('show'), showTime);
             }
         }
 
-        // 核心逻辑：点击后执行
-        function start() {
-            // 隐藏点击提示，显示字幕容器
+        // 启动字幕流程
+        function startSubtitle() {
             document.getElementById('clickTip').style.display = 'none';
-            document.getElementById('wishContainer').style.display = 'block';
+            document.getElementById('subtitleContainer').style.display = 'block';
 
-            // 极简时间轴：每个内容显示1.5秒，衔接紧密
+            // 字幕时间轴
             setTimeout(() => showItem("item1", 1500), 100);    // Hi宝宝
             setTimeout(() => showItem("item2", 1500), 1600);   // 祝你
             setTimeout(() => showItem("item3", 1500), 3100);   // 生日快乐
@@ -129,15 +215,64 @@
             setTimeout(() => showItem("count2", 1000), 10100); // 2
             setTimeout(() => {
                 showItem("count1", 1000);  // 1
+                // 倒计时结束：播放音乐+启动蛋糕动画
                 setTimeout(() => {
-                    document.getElementById('birthdayAudio').play();
-                    console.log("播放音乐");
+                    startCakeAnimation();
+                    playMusic();
                 }, 1000);
             }, 11100);
         }
 
-        // 绑定点击事件
-        document.body.addEventListener('click', start, { once: true });
+        // 播放音乐
+        function playMusic() {
+            const audio = document.getElementById('birthdayAudio');
+            audio.play().catch(err => {
+                alert("请点击页面播放音乐~");
+                document.body.addEventListener('click', () => audio.play(), { once: true });
+            });
+        }
+
+        // 显示/隐藏元素
+        function showElement(id) { document.getElementById(id).style.display = 'block'; }
+        function hideElement(id) { document.getElementById(id).style.display = 'none'; }
+
+        // 启动蛋糕动画
+        function startCakeAnimation() {
+            hideElement('subtitleContainer'); // 隐藏字幕
+
+            // 蛋糕动画顺序
+            setTimeout(() => { showElement('base'); showElement('questionText'); }, 500);
+            setTimeout(() => showElement('layer1'), 1500);
+            setTimeout(() => showElement('layer2'), 2500);
+            setTimeout(() => showElement('cream'), 3500);
+            setTimeout(() => showElement('candle'), 4500);
+            setTimeout(() => { showElement('flame'); showElement('birthdayText'); }, 5500);
+            setTimeout(() => {
+                ['square1','square2','square3'].forEach(id => showElement(id));
+                showElement('btnGroup');
+            }, 6500);
+
+            initBtnEvent(); // 初始化按钮交互
+        }
+
+        // 按钮交互逻辑：点击非常快乐跳转到第三层next.html
+        function initBtnEvent() {
+            // 不太开心：显示提示
+            document.getElementById('unhappyBtn').addEventListener('click', () => {
+                showElement('tipText');
+            });
+
+            // 非常快乐：关闭音乐+跳转到第三层next.html
+            document.getElementById('happyBtn').addEventListener('click', () => {
+                document.getElementById('birthdayAudio').pause();
+                window.location.href = "next.html";
+            });
+        }
+
+        // 入口：点击页面启动所有流程
+        window.onload = function() {
+            document.body.addEventListener('click', startSubtitle, { once: true });
+        };
     </script>
 </body>
 </html>
