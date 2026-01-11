@@ -83,7 +83,7 @@
             background: rgba(255, 194, 209, 0.8); /* 半透明粉色叠加，增强层次感 */
         }
 
-        /* 字幕样式 - 优化居中+绝美动画 */
+        /* 字幕样式 - 优化居中+绝美动画（支持两行显示） */
         .subtitle {
             font-size: 70px;
             font-weight: bold;
@@ -92,13 +92,20 @@
             letter-spacing: 20px;
             text-align: center;
             opacity: 0;
-            white-space: nowrap; /* 防止换行，确保单行居中 */
+            white-space: normal; /* 取消单行限制，支持换行 */
             text-shadow: 0 0 20px rgba(244, 114, 182, 0.8), 0 4px 10px rgba(244, 114, 182, 0.4);
             /* 初始状态 */
             transform: translate(-50%, -50%) scale(0.8);
             position: absolute;
             top: 50%;
             left: 50%;
+            line-height: 1.2; /* 两行间距优化 */
+        }
+
+        /* 专门适配Happy Birthday两行样式 */
+        .subtitle.two-line {
+            font-size: 60px; /* 两行时字号稍小，避免溢出 */
+            letter-spacing: 15px;
         }
 
         /* 字幕显示动画：淡入+缩放+发光 */
@@ -125,7 +132,7 @@
             50% { text-shadow: 0 0 30px rgba(244, 114, 182, 1), 0 6px 15px rgba(244, 114, 182, 0.6); }
         }
 
-        /* 4. 蛋糕容器 - 保持原有美化，蜡烛朝上 */
+        /* 4. 蛋糕容器 - 彻底修正蜡烛朝上 + 优化结构 */
         #cakeWrapper {
             position: fixed;
             top: 50%;
@@ -140,8 +147,10 @@
             position: relative;
             width: 220px;
             margin: 0 auto;
+            transform: translateY(0); /* 重置偏移，确保蛋糕整体居中 */
         }
 
+        /* 蛋糕底座（最下层） */
         .cake-base {
             width: 220px;
             height: 25px;
@@ -149,8 +158,10 @@
             border-radius: 8px;
             border: 2px solid #e0d6d0;
             position: relative;
+            z-index: 1; /* 层级最低 */
         }
 
+        /* 蛋糕底层奶油 */
         .cake-layer-bottom {
             width: 200px;
             height: 45px;
@@ -158,10 +169,12 @@
             margin: 0 auto;
             border-radius: 8px 8px 4px 4px;
             position: relative;
-            top: -5px;
+            top: -2px; /* 轻微覆盖底座，增强层次感 */
+            z-index: 2; /* 层级高于底座 */
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
+        /* 蛋糕上层奶油 */
         .cake-layer-top {
             width: 160px;
             height: 35px;
@@ -169,10 +182,12 @@
             margin: 0 auto;
             border-radius: 6px 6px 2px 2px;
             position: relative;
-            top: -10px;
+            top: -4px; /* 覆盖下层奶油 */
+            z-index: 3; /* 层级高于底层奶油 */
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
 
+        /* 草莓装饰 */
         .strawberry {
             position: absolute;
             width: 25px;
@@ -180,6 +195,7 @@
             background: linear-gradient(135deg, #ef4444, #dc2626);
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
             top: -15px;
+            z-index: 4; /* 层级高于上层奶油 */
         }
 
         .strawberry::before {
@@ -198,14 +214,16 @@
         .strawberry-2 { left: 80px; }
         .strawberry-3 { left: 130px; }
 
+        /* 蜡烛（彻底修正：在蛋糕最顶部，朝上） */
         .candle {
             width: 12px;
             height: 40px;
             background: linear-gradient(90deg, #ffffff, #fef2f2);
             margin: 0 auto;
-            margin-top: -45px;
-            border-radius: 6px 6px 0 0;
             position: relative;
+            top: -40px; /* 从上层奶油顶部向上延伸 */
+            z-index: 5; /* 层级最高 */
+            border-radius: 6px 6px 0 0;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
@@ -220,12 +238,15 @@
             border-radius: 3px;
         }
 
+        /* 火焰（蜡烛顶端，朝上） */
         .flame {
             width: 15px;
             height: 25px;
             background: linear-gradient(180deg, #ff9900, #ffd700);
             margin: 0 auto;
-            margin-top: -15px;
+            position: relative;
+            top: -15px; /* 贴在蜡烛顶端 */
+            z-index: 6; /* 层级高于蜡烛 */
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
             box-shadow: 0 0 20px #ff9900;
             animation: flame 0.8s infinite alternate;
@@ -318,12 +339,13 @@
     <!-- 1. 初始点击提示 -->
     <div id="clickPrompt">点击页面获取祝福 ❤️</div>
 
-    <!-- 2. 字幕容器 -->
+    <!-- 2. 字幕容器 - Happy Birthday改为两行 -->
     <div id="subtitleWrapper">
         <div class="subtitle" id="subtitle1">Hi宝宝</div>
         <div class="subtitle" id="subtitle2">祝你</div>
         <div class="subtitle" id="subtitle3">生日快乐</div>
-        <div class="subtitle" id="subtitle4">Happy Birthday</div>
+        <!-- 核心修改：Happy Birthday拆分为两行，并添加专属类名 -->
+        <div class="subtitle two-line" id="subtitle4">Happy<br>Birthday</div>
         <div class="subtitle" id="subtitle5">打开声音</div>
         <div class="subtitle" id="subtitle6">准备好了吗</div>
         <div class="subtitle" id="count3">3</div>
@@ -331,16 +353,21 @@
         <div class="subtitle" id="count1">1</div>
     </div>
 
-    <!-- 3. 蛋糕容器 -->
+    <!-- 3. 蛋糕容器 - 修正后结构 -->
     <div id="cakeWrapper">
         <div class="cake">
+            <!-- 底座（最下层） -->
             <div class="cake-base"></div>
+            <!-- 底层奶油 -->
             <div class="cake-layer-bottom"></div>
+            <!-- 上层奶油 -->
             <div class="cake-layer-top">
+                <!-- 草莓装饰 -->
                 <div class="strawberry strawberry-1"></div>
                 <div class="strawberry strawberry-2"></div>
                 <div class="strawberry strawberry-3"></div>
             </div>
+            <!-- 蜡烛（蛋糕最顶部，朝上） -->
             <div class="candle"></div>
             <div class="flame"></div>
         </div>
@@ -393,7 +420,7 @@
             { id: 'subtitle1', time: 1500 },
             { id: 'subtitle2', time: 1500 },
             { id: 'subtitle3', time: 1500 },
-            { id: 'subtitle4', time: 1500 },
+            { id: 'subtitle4', time: 2000 }, // Happy Birthday两行显示，时长稍长
             { id: 'subtitle5', time: 1500 },
             { id: 'subtitle6', time: 1500 },
             { id: 'count3', time: 1000 },
