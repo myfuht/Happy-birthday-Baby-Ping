@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>给萍萍的生日祝福 ✨</title>
     <style>
-        /* 全局样式重置 */
         * {
             margin: 0;
             padding: 0;
@@ -13,7 +12,6 @@
             font-family: "微软雅黑", "PingFang SC", sans-serif;
         }
 
-        /* 页面背景：温柔粉紫渐变 */
         body {
             background: linear-gradient(135deg, #fdf2f8, #f3e8ff);
             min-height: 100vh;
@@ -24,30 +22,25 @@
             overflow: hidden;
         }
 
-        /* 背景爱心装饰（浮动动效） */
-        body::before, body::after {
-            content: "❤️";
-            font-size: 20px;
+        /* 背景爱心装饰 */
+        .heart {
             position: absolute;
+            font-size: 20px;
+            color: #ec4899;
             opacity: 0.3;
             animation: float 6s ease-in-out infinite;
         }
-        body::before {
-            top: 10%;
-            left: 15%;
-            animation-delay: 0s;
-        }
-        body::after {
-            bottom: 15%;
-            right: 20%;
-            animation-delay: 2s;
-        }
+
+        .heart:nth-child(1) { top: 10%; left: 15%; animation-delay: 0s; }
+        .heart:nth-child(2) { bottom: 15%; right: 20%; animation-delay: 2s; }
+        .heart:nth-child(3) { top: 40%; right: 10%; animation-delay: 4s; }
+
         @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-20px); }
         }
 
-        /* 登录卡片容器 */
+        /* 登录卡片 */
         .login-card {
             width: 450px;
             background: white;
@@ -58,7 +51,6 @@
             text-align: center;
         }
 
-        /* 顶部蝴蝶结装饰 */
         .login-card::before {
             content: "🎀";
             font-size: 45px;
@@ -70,18 +62,18 @@
             padding: 0 15px;
         }
 
-        /* 生日图片展示区域 */
+        /* 图片区域 */
         .birthday-img {
             width: 100%;
             height: 180px;
             margin-bottom: 25px;
             border-radius: 12px;
             overflow: hidden;
-        }
-        .birthday-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* 保证图片不变形 */
+            background: #fce7f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #a855f7;
         }
 
         /* 标题样式 */
@@ -90,6 +82,7 @@
             font-size: 26px;
             margin-bottom: 8px;
         }
+
         .login-subtitle {
             color: #a855f7;
             font-size: 16px;
@@ -97,17 +90,19 @@
             font-weight: normal;
         }
 
-        /* 输入框组 */
+        /* 输入框 */
         .input-group {
             margin-bottom: 20px;
             text-align: left;
         }
+
         .input-group label {
             display: block;
             margin-bottom: 8px;
             color: #6b7280;
             font-size: 14px;
         }
+
         .input-group input {
             width: 100%;
             padding: 12px 15px;
@@ -116,17 +111,18 @@
             font-size: 15px;
             transition: all 0.3s ease;
         }
+
         .input-group input:focus {
             outline: none;
             border-color: #ec4899;
             box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.1);
         }
 
-        /* 错误提示样式 */
+        /* 错误提示 */
         .error-tip {
             color: #ef4444;
             font-size: 12px;
-            margin-top: 5px;
+            margin: 10px 0;
             display: none;
             text-align: center;
         }
@@ -145,6 +141,7 @@
             transition: all 0.3s ease;
             margin-top: 10px;
         }
+
         .login-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(236, 72, 153, 0.2);
@@ -152,10 +149,15 @@
     </style>
 </head>
 <body>
+    <!-- 背景爱心 -->
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+
     <div class="login-card">
-        <!-- 图片路径：仓库根目录的ppandtt.jpg -->
         <div class="birthday-img">
-            <img src="ppandtt.jpg" alt="给萍萍的生日专属照片">
+            <span>专属生日回忆 💖</span>
+            <!-- 替换为你的图片：<img src="ppandtt.jpg" alt="给萍萍的生日专属照片"> -->
         </div>
 
         <h1 class="login-title">亲爱的萍萍🎂</h1>
@@ -173,28 +175,47 @@
 
         <div class="error-tip" id="errorTip">口令不对哦～再试试❤️</div>
         
-        <button class="login-btn" onclick="checkLogin()">解锁惊喜 ✨</button>
+        <button class="login-btn" id="loginBtn">解锁惊喜 ✨</button>
     </div>
 
     <script>
-        // 验证账号密码并跳转到第二层：wish.html
+        // 获取DOM元素
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const errorTip = document.getElementById('errorTip');
+        const loginBtn = document.getElementById('loginBtn');
+
+        // 登录验证函数
         function checkLogin() {
-            const username = document.getElementById("username").value.trim();
-            const password = document.getElementById("password").value.trim();
-            const errorTip = document.getElementById("errorTip");
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
             
             // 隐藏错误提示
             errorTip.style.display = "none";
 
-            // 验证规则：账号=挚爱萍萍，密码=5201314
+            // 验证规则
             if (username === "挚爱萍萍" && password === "5201314") {
-                // 跳转到同目录下的wish.html（第二层）
+                // 跳转到祝福页面
                 window.location.href = "wish.html";
             } else {
                 // 显示错误提示
                 errorTip.style.display = "block";
+                // 输入框抖动效果
+                usernameInput.style.borderColor = "#ef4444";
+                passwordInput.style.borderColor = "#ef4444";
+                setTimeout(() => {
+                    usernameInput.style.borderColor = "#fce7f3";
+                    passwordInput.style.borderColor = "#fce7f3";
+                }, 1000);
             }
         }
+
+        // 绑定点击事件
+        loginBtn.addEventListener('click', checkLogin);
+        // 回车登录
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') checkLogin();
+        });
     </script>
 </body>
 </html>
