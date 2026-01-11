@@ -36,7 +36,7 @@
             z-index: 100;
         }
 
-        /* 2. 字幕样式（确保清晰显示） */
+        /* 2. 字幕容器：flex居中+初始隐藏 */
         #subtitleContainer {
             position: absolute;
             top: 0;
@@ -45,24 +45,22 @@
             height: 100%;
             z-index: 90;
             display: none; /* 初始隐藏 */
-            /* 强制居中所有字幕 */
-            display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: center; /* 强制居中字幕 */
         }
+        /* 字幕样式：描边确保可见 */
         .text-item, .count-item {
             font-size: 60px;
             font-weight: bold;
             color: #ffffff;
-            /* 加深色描边，确保在粉色背景上可见 */
-            -webkit-text-stroke: 1px #ff6699;
+            -webkit-text-stroke: 1px #ff6699; /* 粉色描边，避免和背景融合 */
             letter-spacing: 15px;
             display: none; /* 初始隐藏 */
         }
         .count-item {
             font-size: 100px;
         }
-        /* 显示类：直接强制显示 */
+        /* 显示类：强制显示 */
         .show {
             display: block !important;
         }
@@ -206,7 +204,7 @@
     </style>
 </head>
 <body>
-    <!-- 修复：闭合音频标签（否则DOM解析出错） -->
+    <!-- 修复：闭合音频标签（避免DOM解析错误） -->
     <audio id="birthdayAudio" preload="auto">
         <source src="jimo.mp3" type="audio/mpeg">
     
@@ -214,7 +212,7 @@
     <!-- 1. 初始点击提示 -->
     <div id="clickTip">点击页面开始祝福 ❤️</div>
 
-    <!-- 2. 字幕容器（确保DOM解析正常） -->
+    <!-- 2. 字幕容器 -->
     <div id="subtitleContainer">
         <div class="text-item" id="item1">Hi宝宝</div>
         <div class="text-item" id="item2">祝你</div>
@@ -250,7 +248,7 @@
     <div class="tip-text" id="tipText">萍宝宝不允许不开心哦~请点击非常快乐</div>
 
     <script>
-        // 修复：先定义显示/隐藏函数（避免未定义错误）
+        // 显示/隐藏普通元素
         function showElement(id) { 
             const el = document.getElementById(id);
             if (el) el.style.display = 'block'; 
@@ -260,28 +258,25 @@
             if (el) el.style.display = 'none'; 
         }
 
-        // 显示单个字幕（确保逻辑正确）
+        // 显示单个字幕（添加show类）
         function showItem(itemId, showTime) {
             // 隐藏所有字幕
-            const allItems = document.querySelectorAll('.text-item, .count-item');
-            allItems.forEach(item => item.classList.remove('show'));
+            document.querySelectorAll('.text-item, .count-item').forEach(item => item.classList.remove('show'));
             // 显示当前字幕
             const item = document.getElementById(itemId);
             if (item) {
                 item.classList.add('show');
-                // 定时隐藏
                 setTimeout(() => item.classList.remove('show'), showTime);
             }
         }
 
-        // 启动字幕流程（确保容器显示）
+        // 启动字幕流程：修复容器布局
         function startSubtitle() {
-            // 隐藏点击提示
             hideElement('clickTip');
-            // 显示字幕容器
-            showElement('subtitleContainer');
+            // 字幕容器设为flex（确保居中显示）
+            document.getElementById('subtitleContainer').style.display = 'flex';
 
-            // 字幕时间轴（确保每一步执行）
+            // 字幕时间轴（依次显示）
             setTimeout(() => showItem("item1", 1500), 100);    // Hi宝宝
             setTimeout(() => showItem("item2", 1500), 1600);   // 祝你
             setTimeout(() => showItem("item3", 1500), 3100);   // 生日快乐
@@ -292,7 +287,7 @@
             setTimeout(() => showItem("count2", 1000), 10100); // 2
             setTimeout(() => {
                 showItem("count1", 1000);  // 1
-                // 倒计时结束：启动蛋糕动画+播放音乐
+                // 倒计时后启动蛋糕动画
                 setTimeout(() => {
                     startCakeAnimation();
                     playMusic();
@@ -311,9 +306,9 @@
 
         // 启动蛋糕动画
         function startCakeAnimation() {
-            hideElement('subtitleContainer'); // 隐藏字幕
-
-            // 蛋糕显示顺序
+            // 隐藏字幕容器
+            document.getElementById('subtitleContainer').style.display = 'none';
+            
             setTimeout(() => {
                 showElement('cakeContainer');
                 showElement('questionText');
@@ -322,25 +317,21 @@
                 showElement('birthdayText');
                 document.querySelectorAll('.float-square').forEach(el => el.style.display = 'block');
             }, 1500);
-            setTimeout(() => {
-                showElement('btnGroup');
-            }, 2500);
+            setTimeout(() => showElement('btnGroup'), 2500);
 
             initBtnEvent();
         }
 
         // 按钮交互
         function initBtnEvent() {
-            document.getElementById('unhappyBtn').addEventListener('click', () => {
-                showElement('tipText');
-            });
+            document.getElementById('unhappyBtn').addEventListener('click', () => showElement('tipText'));
             document.getElementById('happyBtn').addEventListener('click', () => {
                 document.getElementById('birthdayAudio').pause();
                 window.location.href = "next.html";
             });
         }
 
-        // 入口：页面加载后绑定点击事件
+        // 页面加载后绑定点击事件
         window.onload = function() {
             document.body.addEventListener('click', startSubtitle, { once: true });
         };
