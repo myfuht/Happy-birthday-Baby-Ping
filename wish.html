@@ -12,14 +12,10 @@
             font-family: "微软雅黑", "PingFang SC", sans-serif;
         }
         body {
-            background: #ffc2d1; /* 匹配截图粉色背景 */
+            background: #ffc2d1; /* 粉色背景 */
             min-height: 100vh;
             position: relative;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
         }
 
         /* 1. 初始点击提示 */
@@ -36,7 +32,7 @@
             z-index: 100;
         }
 
-        /* 2. 字幕样式（Hi宝宝→321） */
+        /* 2. 字幕容器（强制显示，简化样式） */
         #subtitleContainer {
             position: absolute;
             top: 0;
@@ -44,30 +40,27 @@
             width: 100%;
             height: 100%;
             z-index: 90;
-            display: none;
+            display: none; /* 初始隐藏 */
+            /* 强制居中所有子元素 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+        /* 字幕元素：去掉复杂样式，确保清晰可见 */
         .text-item, .count-item {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-weight: bold;
-            color: #ffffff;
-            text-shadow: 0 0 10px #ff0080;
-            display: none;
-        }
-        .text-item {
             font-size: 60px;
+            font-weight: bold;
+            color: #ffffff; /* 白色字+深色描边，确保在粉色背景上可见 */
+            -webkit-text-stroke: 1px #ff6699;
             letter-spacing: 15px;
+            display: none; /* 初始隐藏 */
         }
-        .count-item {
-            font-size: 100px;
-        }
+        /* 显示类：直接block，不依赖复杂动画 */
         .show {
             display: block !important;
         }
 
-        /* 3. 截图同款蛋糕（分层结构） */
+        /* 3. 蛋糕样式（保留） */
         .cake-container {
             position: absolute;
             top: 30%;
@@ -76,16 +69,14 @@
             z-index: 80;
             text-align: center;
         }
-        /* 蛋糕底座（带边框） */
         .cake-base {
             width: 150px;
             height: 10px;
             background: #f0e6e0;
             border: 2px solid #f9e4b7;
             border-radius: 2px;
-            display: none; /* 初始隐藏 */
+            display: none;
         }
-        /* 中间三层蛋糕 */
         .cake-layer1 {
             width: 130px;
             height: 15px;
@@ -110,7 +101,6 @@
             border-radius: 2px;
             display: none;
         }
-        /* 蜡烛 */
         .candle {
             width: 8px;
             height: 20px;
@@ -119,7 +109,6 @@
             border-radius: 2px 2px 0 0;
             display: none;
         }
-        /* 彩色随机火焰（渐变+跳动） */
         .flame {
             width: 10px;
             height: 15px;
@@ -135,7 +124,7 @@
             100% { transform: scale(1.1) translateY(-2px); }
         }
 
-        /* 4. 文字+交互（匹配截图） */
+        /* 4. 文字+交互（保留） */
         .question-text {
             font-size: 24px; 
             color: #ffffff; 
@@ -147,7 +136,7 @@
             transform: translateX(-50%);
         }
         .birthday-text {
-            font-size: 20px; /* 更小更匹配 */
+            font-size: 20px;
             color: #555555; 
             font-style: italic; 
             display: none; 
@@ -157,7 +146,6 @@
             left: 50%; 
             transform: translateX(-50%);
         }
-        /* 背景浮动方块 */
         .float-square {
             position: absolute;
             background: rgba(255, 255, 255, 0.25);
@@ -204,7 +192,7 @@
     <!-- 1. 初始点击提示 -->
     <div id="clickTip">点击页面开始祝福 ❤️</div>
 
-    <!-- 2. 字幕容器 -->
+    <!-- 2. 字幕容器（简化，确保元素ID正确） -->
     <div id="subtitleContainer">
         <div class="text-item" id="item1">Hi宝宝</div>
         <div class="text-item" id="item2">祝你</div>
@@ -217,7 +205,7 @@
         <div class="count-item" id="count1">1</div>
     </div>
 
-    <!-- 3. 分层蛋糕容器 -->
+    <!-- 3. 蛋糕容器 -->
     <div class="cake-container">
         <div class="cake-base" id="cakeBase"></div>
         <div class="cake-layer1" id="cakeLayer1"></div>
@@ -240,37 +228,88 @@
     <div class="tip-text" id="tipText">萍宝宝不允许不开心哦~请点击非常快乐</div>
 
     <script>
-        // 显示单个字幕/数字
+        // 显示/隐藏函数（加日志，确认执行）
+        function showElement(id) { 
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.display = 'block';
+                console.log(`显示元素：${id}`);
+            } else {
+                console.log(`元素不存在：${id}`);
+            }
+        }
+        function hideElement(id) { 
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.display = 'none';
+                console.log(`隐藏元素：${id}`);
+            }
+        }
+
+        // 显示单个字幕（加日志，确认执行）
         function showItem(itemId, showTime) {
+            console.log(`准备显示字幕：${itemId}`);
             const allItems = document.querySelectorAll('.text-item, .count-item');
             allItems.forEach(item => item.classList.remove('show'));
             const item = document.getElementById(itemId);
             if (item) {
                 item.classList.add('show');
-                setTimeout(() => item.classList.remove('show'), showTime);
+                console.log(`已显示字幕：${itemId}`);
+                setTimeout(() => {
+                    item.classList.remove('show');
+                    console.log(`隐藏字幕：${itemId}`);
+                }, showTime);
+            } else {
+                console.log(`字幕元素不存在：${itemId}`);
             }
         }
 
-        // 启动字幕流程
+        // 启动字幕流程（加日志，确认执行）
         function startSubtitle() {
-            document.getElementById('clickTip').style.display = 'none';
-            document.getElementById('subtitleContainer').style.display = 'block';
+            console.log("开始执行字幕流程");
+            hideElement('clickTip'); // 隐藏初始提示
+            showElement('subtitleContainer'); // 显示字幕容器
 
-            // 字幕时间轴
-            setTimeout(() => showItem("item1", 1500), 100);    // Hi宝宝
-            setTimeout(() => showItem("item2", 1500), 1600);   // 祝你
-            setTimeout(() => showItem("item3", 1500), 3100);   // 生日快乐
-            setTimeout(() => showItem("item4", 1500), 4600);   // Happy Birthday
-            setTimeout(() => showItem("item5", 1500), 6100);   // 打开声音
-            setTimeout(() => showItem("item6", 1500), 7600);   // 准备好了吗
-            setTimeout(() => showItem("count3", 1000), 9100);  // 3
-            setTimeout(() => showItem("count2", 1000), 10100); // 2
+            // 字幕时间轴（每步加日志）
             setTimeout(() => {
-                showItem("count1", 1000);  // 1
-                // 倒计时结束：播放音乐+启动蛋糕动画
+                showItem("item1", 1500);
+                console.log("调度显示：Hi宝宝");
+            }, 100);
+            setTimeout(() => {
+                showItem("item2", 1500);
+                console.log("调度显示：祝你");
+            }, 1600);
+            setTimeout(() => {
+                showItem("item3", 1500);
+                console.log("调度显示：生日快乐");
+            }, 3100);
+            setTimeout(() => {
+                showItem("item4", 1500);
+                console.log("调度显示：Happy Birthday");
+            }, 4600);
+            setTimeout(() => {
+                showItem("item5", 1500);
+                console.log("调度显示：打开声音");
+            }, 6100);
+            setTimeout(() => {
+                showItem("item6", 1500);
+                console.log("调度显示：准备好了吗");
+            }, 7600);
+            setTimeout(() => {
+                showItem("count3", 1000);
+                console.log("调度显示：3");
+            }, 9100);
+            setTimeout(() => {
+                showItem("count2", 1000);
+                console.log("调度显示：2");
+            }, 10100);
+            setTimeout(() => {
+                showItem("count1", 1000);
+                console.log("调度显示：1");
                 setTimeout(() => {
                     startCakeAnimation();
                     playMusic();
+                    console.log("调度：蛋糕动画+音乐");
                 }, 1000);
             }, 11100);
         }
@@ -278,82 +317,50 @@
         // 播放音乐
         function playMusic() {
             const audio = document.getElementById('birthdayAudio');
-            audio.play().catch(err => {
-                alert("请点击页面播放音乐~");
-                document.body.addEventListener('click', () => audio.play(), { once: true });
-            });
+            if (audio) {
+                audio.play().catch(err => {
+                    alert("请点击页面播放音乐~");
+                    document.body.addEventListener('click', () => audio.play(), { once: true });
+                });
+            }
         }
 
-        // 火焰随机变色（暖色调循环）
-        function randomFlameColor() {
-            const colors = [
-                'linear-gradient(180deg, #ff5e5e, #ff9900)', // 红→橙
-                'linear-gradient(180deg, #ff9900, #ffd700)', // 橙→黄
-                'linear-gradient(180deg, #ffd700, #ffb3c6)', // 黄→粉
-                'linear-gradient(180deg, #ffb3c6, #ff5e5e)'  // 粉→红
-            ];
-            const randomColor = colors[Math.floor(Math.random() * colors.length)];
-            document.getElementById('flame').style.background = randomColor;
-        }
-
-        // 按顺序显示蛋糕分层
+        // 蛋糕动画
         function startCakeAnimation() {
             hideElement('subtitleContainer');
-
-            // 步骤1：显示底座
-            setTimeout(() => {
-                showElement('cakeBase');
-            }, 500);
-            // 步骤2：显示第一层蛋糕
-            setTimeout(() => {
-                showElement('cakeLayer1');
-            }, 1000);
-            // 步骤3：显示第二层蛋糕
-            setTimeout(() => {
-                showElement('cakeLayer2');
-            }, 1500);
-            // 步骤4：显示第三层蛋糕
-            setTimeout(() => {
-                showElement('cakeLayer3');
-            }, 2000);
-            // 步骤5：显示蜡烛
-            setTimeout(() => {
-                showElement('candle');
-            }, 2500);
-            // 步骤6：显示火焰+文字+方块
+            setTimeout(() => showElement('cakeBase'), 500);
+            setTimeout(() => showElement('cakeLayer1'), 1000);
+            setTimeout(() => showElement('cakeLayer2'), 1500);
+            setTimeout(() => showElement('cakeLayer3'), 2000);
+            setTimeout(() => showElement('candle'), 2500);
             setTimeout(() => {
                 showElement('flame');
                 showElement('questionText');
                 showElement('birthdayText');
                 document.querySelectorAll('.float-square').forEach(el => el.style.display = 'block');
-                // 火焰每500ms随机变色
-                setInterval(randomFlameColor, 500);
+                setInterval(() => {
+                    const colors = ['linear-gradient(180deg, #ff5e5e, #ff9900)', 'linear-gradient(180deg, #ff9900, #ffd700)', 'linear-gradient(180deg, #ffd700, #ffb3c6)'];
+                    document.getElementById('flame').style.background = colors[Math.floor(Math.random() * colors.length)];
+                }, 500);
             }, 3000);
-            // 步骤7：显示按钮
-            setTimeout(() => {
-                showElement('btnGroup');
-            }, 3500);
-
-            initBtnEvent();
+            setTimeout(() => showElement('btnGroup'), 3500);
         }
-
-        // 显示/隐藏元素
-        function showElement(id) { document.getElementById(id).style.display = 'block'; }
-        function hideElement(id) { document.getElementById(id).style.display = 'none'; }
 
         // 按钮交互
         function initBtnEvent() {
-            document.getElementById('unhappyBtn').addEventListener('click', () => {
-                showElement('tipText');
-            });
-            document.getElementById('happyBtn').addEventListener('click', () => {
+            const unhappyBtn = document.getElementById('unhappyBtn');
+            const happyBtn = document.getElementById('happyBtn');
+            if (unhappyBtn) unhappyBtn.addEventListener('click', () => showElement('tipText'));
+            if (happyBtn) happyBtn.addEventListener('click', () => {
                 document.getElementById('birthdayAudio').pause();
                 window.location.href = "next.html";
             });
         }
 
-        // 入口
+        // 入口：页面加载后绑定点击
         window.onload = function() {
+            console.log("wish.html页面加载完成");
+            initBtnEvent();
             document.body.addEventListener('click', startSubtitle, { once: true });
         };
     </script>
