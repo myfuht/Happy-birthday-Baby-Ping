@@ -153,7 +153,7 @@
 </head>
 <body>
     <div class="login-card">
-        <!-- 图片路径已改为仓库根目录的ppandtt.jpg -->
+        <!-- 图片路径：仓库根目录的ppandtt.jpg -->
         <div class="birthday-img">
             <img src="ppandtt.jpg" alt="给萍萍的生日专属照片">
         </div>
@@ -177,7 +177,7 @@
     </div>
 
     <script>
-        // 验证账号密码并跳转到祝福页（wish.html）
+        // 验证账号密码并跳转到第二层：wish.html
         function checkLogin() {
             const username = document.getElementById("username").value.trim();
             const password = document.getElementById("password").value.trim();
@@ -188,7 +188,7 @@
 
             // 验证规则：账号=挚爱萍萍，密码=5201314
             if (username === "挚爱萍萍" && password === "5201314") {
-                // 跳转到同目录下的wish.html
+                // 跳转到同目录下的wish.html（第二层）
                 window.location.href = "wish.html";
             } else {
                 // 显示错误提示
