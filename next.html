@@ -1,1 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>给萍萍的专属祝福 ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", "PingFang SC", sans-serif;
+        }
+        body {
+            background: #ffc2d1; /* 和主界面统一的粉色背景 */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
 
+        /* 爱心装饰动画 */
+        .heart {
+            position: absolute;
+            color: #ffffff;
+            font-size: 20px;
+            opacity: 0.7;
+            animation: float 6s infinite ease-in-out;
+            z-index: 1;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+        }
+
+        /* 照片区域 */
+        .photo-box {
+            width: 80%;
+            max-width: 400px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(255, 100, 150, 0.2);
+            margin-bottom: 30px;
+            z-index: 2;
+        }
+        .photo-box img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* 祝福文字 */
+        .blessing {
+            text-align: center;
+            color: #ffffff;
+            font-size: 22px;
+            line-height: 2;
+            max-width: 600px;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease;
+        }
+        .blessing .name {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6699;
+        }
+    </style>
+</head>
+<body>
+    <!-- 爱心装饰（自动浮动） -->
+    <div class="heart" style="top: 10%; left: 15%; animation-delay: 0s;">❤️</div>
+    <div class="heart" style="top: 20%; right: 20%; animation-delay: 1s;">❤️</div>
+    <div class="heart" style="bottom: 15%; left: 25%; animation-delay: 2s;">❤️</div>
+    <div class="heart" style="bottom: 25%; right: 15%; animation-delay: 3s;">❤️</div>
+    <div class="heart" style="top: 40%; left: 40%; animation-delay: 4s;">❤️</div>
+
+    <!-- 照片区域（匹配仓库根目录的ppandtt.jpg） -->
+    <div class="photo-box">
+        <img src="ppandtt.jpg" alt="和萍宝宝的合照">
+    </div>
+
+    <!-- 温馨祝福文字 -->
+    <div class="blessing" id="blessingText">
+        亲爱的萍宝宝：<br>
+        生日快乐呀～<br>
+        希望今天的你被快乐和甜蜜填满，<br>
+        不止生日这一天，而是岁岁年年～<br>
+        往后的日子，我会一直陪着你，<br>
+        把普通的生活过成甜甜的样子～<br>
+        <div class="name">永远爱你的XX（你的名字）</div>
+    </div>
+
+    <script>
+        // 页面加载后文字淡入动画
+        window.onload = function() {
+            const text = document.getElementById('blessingText');
+            setTimeout(() => {
+                text.style.opacity = 1;
+                text.style.transform = 'translateY(0)';
+            }, 500);
+
+            // 额外生成随机爱心（增加氛围感）
+            const heartCount = 10;
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = '❤️';
+                heart.style.left = `${Math.random() * 100}vw`;
+                heart.style.top = `${Math.random() * 100}vh`;
+                heart.style.animationDelay = `${Math.random() * 6}s`;
+                document.body.appendChild(heart);
+            }
+        };
+    </script>
+</body>
+</html>
