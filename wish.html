@@ -204,7 +204,7 @@
     </style>
 </head>
 <body>
-    <!-- 修复：闭合音频标签（避免DOM解析错误） -->
+    <!-- 修复：闭合audio标签（解决DOM解析错误） -->
     <audio id="birthdayAudio" preload="auto">
         <source src="jimo.mp3" type="audio/mpeg">
     
@@ -327,13 +327,19 @@
             document.getElementById('unhappyBtn').addEventListener('click', () => showElement('tipText'));
             document.getElementById('happyBtn').addEventListener('click', () => {
                 document.getElementById('birthdayAudio').pause();
-                window.location.href = "next.html";
+                // 注意：你的仓库里next.html已被删除，这里可以替换为其他页面或提示
+                alert("生日快乐！祝福已送达~");
+                // window.location.href = "next.html";
             });
         }
 
-        // 页面加载后绑定点击事件
+        // 页面加载后绑定点击事件（若想自动启动，可直接调用startSubtitle()）
         window.onload = function() {
+            // 方式1：保留“点击页面开始”（原逻辑）
             document.body.addEventListener('click', startSubtitle, { once: true });
+            
+            // 方式2：自动启动（不需要点击），把上面一行注释，解开下面一行
+            // startSubtitle();
         };
     </script>
 </body>
