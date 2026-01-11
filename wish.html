@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>给萍萍的专属惊喜 ❤️</title>
     <style>
-        /* 全局样式：修复居中逻辑，确保字幕能显示 */
         * {
             margin: 0;
             padding: 0;
@@ -14,110 +13,75 @@
         body {
             background: #ffc2d1; /* 浅粉色背景 */
             min-height: 100vh;
-            overflow: hidden;
             position: relative;
+            overflow: hidden;
         }
 
-        /* 背景光点 */
-        .bg-dot {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 50%;
-            animation: float 8s ease-in-out infinite;
-            z-index: 1;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); opacity: 0.4; }
-            50% { transform: translateY(-20px); opacity: 0.8; }
-        }
-
-        /* 初始点击提示：居中显示 */
-        .click-tip {
+        /* 点击提示：确保能看到 */
+        #clickTip {
             font-size: 40px;
             color: #fff;
             font-weight: bold;
             letter-spacing: 10px;
-            z-index: 20;
             text-align: center;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            z-index: 100;
         }
 
-        /* 核心容器：修复定位，确保字幕居中 */
-        .wish-container {
+        /* 字幕容器：全屏覆盖，确保字幕在最上层 */
+        #wishContainer {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 10;
+            z-index: 99;
             display: none; /* 初始隐藏 */
         }
 
-        /* 文字样式：修复居中，确保显示 */
+        /* 所有字幕/数字：默认隐藏，显示时强制居中+醒目 */
+        .text-item, .count-item {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: #ffffff; /* 纯白色，和粉色背景对比强烈 */
+            text-shadow: 0 0 10px #ff0080; /* 加阴影，确保看得见 */
+            display: none; /* 默认隐藏 */
+        }
+
+        /* 普通字幕样式 */
         .text-item {
-            font-size: 56px;
-            font-weight: bold;
-            color: #ffffff;
-            font-family: "微软雅黑", "PingFang SC", sans-serif;
+            font-size: 60px;
             letter-spacing: 15px;
-            display: none;
-            opacity: 0;
-            transition: all 0.8s ease;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
         }
 
-        /* 倒计时数字：修复居中 */
+        /* 倒计时数字样式 */
         .count-item {
-            font-size: 90px;
-            font-weight: bold;
-            color: #ffffff;
-            font-family: "微软雅黑", "PingFang SC", sans-serif;
-            display: none;
-            opacity: 0;
-            transition: all 0.8s ease;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            font-size: 100px;
         }
 
-        /* 显示状态：确保淡入效果 */
-        .text-item.show {
-            display: block;
-            opacity: 1;
-        }
-        .count-item.show {
-            display: block;
-            opacity: 1;
+        /* 显示类：强制显示，无动画也能看到（先保证显示，再谈动画） */
+        .show {
+            display: block !important;
         }
     </style>
 </head>
 <body>
-    <!-- 1. 初始点击提示：引导用户交互 -->
-    <div class="click-tip" id="clickTip">点击页面开始祝福 ❤️</div>
+    <!-- 点击提示 -->
+    <div id="clickTip">点击页面开始祝福 ❤️</div>
 
-    <!-- 2. 音频标签：修复闭合问题 + 适配jimo.mp3 -->
+    <!-- 音频 -->
     <audio id="birthdayAudio" preload="auto">
         <source src="jimo.mp3" type="audio/mpeg">
-        你的浏览器不支持音频播放
     </audio>
 
-    <!-- 3. 背景光点 -->
-    <div class="bg-dot" style="left: 10%; top: 20%; animation-delay: 0s;"></div>
-    <div class="bg-dot" style="left: 80%; top: 30%; animation-delay: 1s;"></div>
-    <div class="bg-dot" style="left: 25%; top: 70%; animation-delay: 2s;"></div>
-    <div class="bg-dot" style="left: 75%; top: 15%; animation-delay: 3s;"></div>
-
-    <!-- 4. 核心容器：确保所有字幕ID正确 -->
-    <div class="wish-container" id="wishContainer">
+    <!-- 字幕容器（所有字幕ID确保正确） -->
+    <div id="wishContainer">
         <div class="text-item" id="item1">Hi宝宝</div>
         <div class="text-item" id="item2">祝你</div>
         <div class="text-item" id="item3">生日快乐</div>
@@ -130,81 +94,50 @@
     </div>
 
     <script>
-        // 生成背景光点
-        function createDots() {
-            const dotCount = 40;
-            for (let i = 0; i < dotCount; i++) {
-                const dot = document.createElement("div");
-                dot.className = "bg-dot";
-                dot.style.left = `${Math.random() * 100}vw`;
-                dot.style.top = `${Math.random() * 100}vh`;
-                dot.style.animationDelay = `${Math.random() * 6}s`;
-                document.body.appendChild(dot);
-            }
-        }
-
-        // 显示指定元素，隐藏其他（修复逻辑）
+        // 显示单个元素，隐藏其他
         function showItem(itemId, showTime) {
-            // 隐藏所有已显示的元素
+            // 隐藏所有元素
             const allItems = document.querySelectorAll('.text-item, .count-item');
             allItems.forEach(item => item.classList.remove('show'));
-            
             // 显示当前元素
-            const currentItem = document.getElementById(itemId);
-            if (currentItem) { // 防止ID错误导致报错
-                currentItem.classList.add('show');
+            const item = document.getElementById(itemId);
+            if (item) {
+                item.classList.add('show');
+                console.log(`显示：${itemId}`); // 调试日志，看是否触发
                 // 显示指定时间后隐藏
                 setTimeout(() => {
-                    currentItem.classList.remove('show');
+                    item.classList.remove('show');
+                    console.log(`隐藏：${itemId}`);
                 }, showTime);
             }
         }
 
-        // 播放音乐（增加日志，方便排查）
-        function playBirthdaySong() {
-            const audio = document.getElementById("birthdayAudio");
-            if (!audio) {
-                alert("音频元素未找到！");
-                return;
-            }
-            // 强制播放（已有用户交互）
-            audio.play().then(() => {
-                console.log("音乐播放成功✅");
-            }).catch(err => {
-                alert(`音乐播放失败：${err.message}\n请检查jimo.mp3是否在根目录`);
-                console.error("播放失败原因：", err);
-            });
-        }
-
-        // 执行完整字幕逻辑（修复时间轴，确保顺序）
-        function startWish() {
+        // 核心逻辑：点击后执行
+        function start() {
             // 隐藏点击提示，显示字幕容器
-            document.getElementById("clickTip").style.display = "none";
-            document.getElementById("wishContainer").style.display = "block";
+            document.getElementById('clickTip').style.display = 'none';
+            document.getElementById('wishContainer').style.display = 'block';
 
-            // 重新梳理时间轴，确保每个字幕衔接正常
-            setTimeout(() => showItem("item1", 2000), 500);    // Hi宝宝（显示2秒）
-            setTimeout(() => showItem("item2", 2000), 2500);    // 祝你（显示2秒）
-            setTimeout(() => showItem("item3", 2000), 4500);    // 生日快乐（显示2秒）
-            setTimeout(() => showItem("item4", 2000), 6500);    // Happy Birthday（显示2秒）
-            setTimeout(() => showItem("item5", 2000), 8500);    // 打开声音（显示2秒）
-            setTimeout(() => showItem("item6", 2000), 10500);   // 准备好了吗（显示2秒）
-            setTimeout(() => showItem("count3", 1000), 12500);  // 3（显示1秒）
-            setTimeout(() => showItem("count2", 1000), 13500);  // 2（显示1秒）
+            // 极简时间轴：每个内容显示1.5秒，衔接紧密
+            setTimeout(() => showItem("item1", 1500), 100);    // Hi宝宝
+            setTimeout(() => showItem("item2", 1500), 1600);   // 祝你
+            setTimeout(() => showItem("item3", 1500), 3100);   // 生日快乐
+            setTimeout(() => showItem("item4", 1500), 4600);   // Happy Birthday
+            setTimeout(() => showItem("item5", 1500), 6100);   // 打开声音
+            setTimeout(() => showItem("item6", 1500), 7600);   // 准备好了吗
+            setTimeout(() => showItem("count3", 1000), 9100);  // 3
+            setTimeout(() => showItem("count2", 1000), 10100); // 2
             setTimeout(() => {
-                showItem("count1", 1000);  // 1（显示1秒）
-                // 倒数完立即播放音乐
-                setTimeout(playBirthdaySong, 1000);
-            }, 14500);
+                showItem("count1", 1000);  // 1
+                setTimeout(() => {
+                    document.getElementById('birthdayAudio').play();
+                    console.log("播放音乐");
+                }, 1000);
+            }, 11100);
         }
 
-        // 页面加载完成后绑定点击事件（核心）
-        window.onload = function() {
-            createDots();
-            // 点击页面任意位置触发，只触发一次
-            document.body.addEventListener('click', startWish, { once: true });
-            console.log("页面加载完成，点击页面开始～");
-        };
+        // 绑定点击事件
+        document.body.addEventListener('click', start, { once: true });
     </script>
 </body>
 </html>
