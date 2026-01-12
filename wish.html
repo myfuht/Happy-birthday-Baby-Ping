@@ -49,10 +49,10 @@
 
         /* 2. 初始点击提示 - 强制居中 + 柔美动画 */
         #clickPrompt {
-            font-size: clamp(25px, 8vw, 45px); /* 响应式字号 */
+            font-size: 45px;
             color: #fff;
             font-weight: bold;
-            letter-spacing: clamp(6px, 2vw, 12px); /* 响应式字间距 */
+            letter-spacing: 12px;
             text-align: center;
             z-index: 100;
             animation: pulse 2s infinite;
@@ -85,11 +85,11 @@
 
         /* 字幕样式 - 优化居中+绝美动画（支持两行显示） */
         .subtitle {
-            font-size: clamp(40px, 12vw, 70px); /* 响应式字号 */
+            font-size: 70px;
             font-weight: bold;
             color: #ffffff;
             -webkit-text-stroke: 1.5px #f472b6; /* 柔粉描边 */
-            letter-spacing: clamp(10px, 3vw, 20px); /* 响应式字间距 */
+            letter-spacing: 20px;
             text-align: center;
             opacity: 0;
             white-space: normal; /* 取消单行限制，支持换行 */
@@ -104,8 +104,8 @@
 
         /* 专门适配Happy Birthday两行样式 */
         .subtitle.two-line {
-            font-size: clamp(30px, 10vw, 60px); /* 两行时响应式字号 */
-            letter-spacing: clamp(8px, 2vw, 15px);
+            font-size: 60px; /* 两行时字号稍小，避免溢出 */
+            letter-spacing: 15px;
         }
 
         /* 字幕显示动画：淡入+缩放+发光 */
@@ -137,8 +137,7 @@
             position: fixed;
             top: 50%;
             left: 50%;
-            /* 修改：调整初始位置，移动端更居中 */
-            transform: translate(-50%, -30%); 
+            transform: translate(-50%, -50%);
             display: none;
             z-index: 80;
             text-align: center;
@@ -148,23 +147,21 @@
         .cake {
             position: relative;
             transform-origin: center bottom;
-            /* 修改：响应式尺寸，适配手机屏幕 */
-            width: clamp(150px, 40vw, 220px);
-            height: clamp(120px, 30vw, 180px);
+            width: 220px;
+            height: 180px; /* 适配分层高度 */
             margin: 0 auto;
         }
 
         /* 蛋糕分层通用样式 - 粉色系适配 + 掉落动画 */
         .cake-layer {
             position: absolute;
-            /* 修改：响应式尺寸 */
-            width: clamp(130px, 35vw, 200px);
-            height: clamp(30px, 8vw, 40px);
+            width: 200px;
+            height: 40px;
             border-radius: 10px;
             left: 50%;
             transform: translateX(-50%);
-            /* 修改：动画时长从1.5s延长到3s，掉落更慢 */
-            animation: fall 3s ease-in forwards;
+            /* 掉落动画：名称、时长、缓动、填充模式（保持动画结束状态） */
+            animation: fall 1.5s ease-in forwards;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
@@ -180,7 +177,7 @@
         /* 分层2：中间层（延迟0.3s）- 中粉色 */
         .layer2 {
             background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
-            bottom: clamp(40px, 10vw, 45px);
+            bottom: 45px;
             animation-delay: 0.3s;
             z-index: 2;
         }
@@ -188,7 +185,7 @@
         /* 分层3：上层（延迟0.6s）- 浅粉色 */
         .layer3 {
             background: linear-gradient(135deg, #fdf2f8, #fbcfe8);
-            bottom: clamp(80px, 20vw, 90px);
+            bottom: 90px;
             animation-delay: 0.6s;
             z-index: 3;
         }
@@ -196,17 +193,14 @@
         /* 奶油顶（延迟0.9s） */
         .cream {
             position: absolute;
-            /* 修改：响应式尺寸 */
-            width: clamp(100px, 28vw, 160px);
-            height: clamp(20px, 6vw, 30px);
+            width: 160px;
+            height: 30px;
             background-color: #fff;
             border-radius: 50% 50% 10px 10px;
             left: 50%;
             transform: translateX(-50%);
-            /* 修改：响应式位置 */
-            bottom: clamp(80px, 20vw, 135px);
-            /* 修改：动画时长3s */
-            animation: fall 3s ease-in forwards;
+            bottom: 135px;
+            animation: fall 1.5s ease-in forwards;
             animation-delay: 0.9s;
             z-index: 4;
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
@@ -215,17 +209,14 @@
         /* 草莓装饰（延迟1.2s） */
         .strawberry {
             position: absolute;
-            /* 修改：响应式尺寸 */
-            width: clamp(20px, 6vw, 30px);
-            height: clamp(20px, 6vw, 30px);
+            width: 30px;
+            height: 30px;
             background: linear-gradient(135deg, #ef4444, #dc2626);
             border-radius: 50% 50% 10px 10px;
             left: 50%;
             transform: translateX(-50%) rotate(-15deg);
-            /* 修改：响应式位置 */
-            bottom: clamp(100px, 24vw, 160px);
-            /* 修改：动画时长3s */
-            animation: fall 3s ease-in forwards;
+            bottom: 160px;
+            animation: fall 1.5s ease-in forwards;
             animation-delay: 1.2s;
             z-index: 5;
         }
@@ -245,21 +236,19 @@
 
         /* 蜡烛（蛋糕最顶部，朝上 + 同步掉落） */
         .candle {
-            /* 修改：响应式尺寸 */
-            width: clamp(8px, 2vw, 12px);
-            height: clamp(30px, 8vw, 40px);
+            width: 12px;
+            height: 40px;
             background: linear-gradient(90deg, #ffffff, #fef2f2);
             margin: 0 auto;
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            /* 修改：响应式位置 */
-            bottom: clamp(110px, 26vw, 170px);
+            bottom: 170px; /* 奶油顶部上方 */
             border-radius: 6px 6px 0 0;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             z-index: 6;
-            /* 修改：动画时长3s */
-            animation: fall 3s ease-in forwards;
+            /* 蜡烛同步掉落，延迟1.2s（和草莓同步） */
+            animation: fall 1.5s ease-in forwards;
             animation-delay: 1.2s;
         }
 
@@ -277,22 +266,20 @@
 
         /* 火焰（蜡烛顶端，朝上 + 同步掉落 + 跳动动画） */
         .flame {
-            /* 修改：响应式尺寸 */
-            width: clamp(10px, 3vw, 15px);
-            height: clamp(18px, 5vw, 25px);
+            width: 15px;
+            height: 25px;
             background: linear-gradient(180deg, #ff9900, #ffd700);
             margin: 0 auto;
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            /* 修改：响应式位置 */
-            bottom: clamp(140px, 32vw, 210px);
+            bottom: 210px; /* 蜡烛顶部 */
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
             box-shadow: 0 0 20px #ff9900;
             z-index: 7;
-            /* 修改：动画时长3s */
+            /* 火焰同步掉落 + 保留跳动动画 */
             animation: 
-                fall 3s ease-in forwards, /* 掉落动画 */
+                fall 1.5s ease-in forwards, /* 掉落动画 */
                 flame 0.8s infinite alternate; /* 跳动动画 */
             animation-delay: 1.2s;
         }
@@ -304,8 +291,7 @@
                 opacity: 1;
             }
             100% {
-                /* 修改：从固定500px改为15vh，避免手机掉出屏幕 */
-                transform: translateX(-50%) translateY(15vh) rotate(15deg);
+                transform: translateX(-50%) translateY(500px) rotate(15deg);
                 opacity: 0.8;
             }
         }
@@ -316,7 +302,7 @@
             100% { transform: translateX(-50%) scale(1.1) translateY(-2px); }
         }
 
-        /* 5. 交互元素 - 保持原有样式并适配移动端 */
+        /* 5. 交互元素 - 保持原有样式 */
         #interactionArea {
             position: fixed;
             bottom: 20%;
@@ -328,7 +314,7 @@
         }
 
         .question {
-            font-size: clamp(20px, 5vw, 30px);
+            font-size: 30px;
             color: #fff;
             margin-bottom: 30px;
             letter-spacing: 3px;
@@ -337,19 +323,18 @@
 
         .btn-group {
             display: flex;
-            gap: clamp(20px, 5vw, 40px);
+            gap: 40px;
             justify-content: center;
             margin-bottom: 20px;
-            flex-wrap: wrap; /* 移动端按钮换行 */
         }
 
         .btn {
-            padding: clamp(8px, 2vw, 12px) clamp(20px, 5vw, 30px);
+            padding: 12px 30px;
             border: 2px solid #fff;
             border-radius: 30px;
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
-            font-size: clamp(14px, 3vw, 18px);
+            font-size: 18px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -364,7 +349,7 @@
 
         .tip {
             color: #fff;
-            font-size: clamp(14px, 3vw, 18px);
+            font-size: 18px;
             display: none;
             margin-top: 10px;
             letter-spacing: 1px;
@@ -490,11 +475,8 @@
             // 超出索引则结束字幕播放
             if (index >= subtitles.length) {
                 subtitleWrapper.style.display = 'none';
-                // 修改：字幕结束后延迟2秒再显示蛋糕，出现更慢
-                setTimeout(() => {
-                    startCakeAnimation(); // 启动蛋糕掉落动画
-                    playMusic();
-                }, 2000);
+                startCakeAnimation(); // 启动蛋糕掉落动画
+                playMusic();
                 return;
             }
 
@@ -530,11 +512,11 @@
         function startCakeAnimation() {
             cakeWrapper.style.display = 'block'; // 显示蛋糕，自动触发掉落动画
             
-            // 修改：延迟从3000ms改为5000ms，等蛋糕动画完全结束再显示交互区
+            // 蛋糕掉落完成后显示交互按钮（延迟3s，等动画结束）
             setTimeout(() => {
                 document.querySelectorAll('.decor').forEach(el => el.style.display = 'block');
                 interactionArea.style.display = 'block';
-            }, 5000);
+            }, 3000);
         }
 
         // 启动字幕流程
