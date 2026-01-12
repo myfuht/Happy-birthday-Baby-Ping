@@ -132,10 +132,10 @@
             50% { text-shadow: 0 0 30px rgba(244, 114, 182, 1), 0 6px 15px rgba(244, 114, 182, 0.6); }
         }
 
-        /* 4. 蛋糕容器 - 分层掉落动画 + 蜡烛朝上 */
+        /* 4. 蛋糕容器 - 逐层组装 + 方向修正 + 位置上调 */
         #cakeWrapper {
             position: fixed;
-            top: 50%;
+            top: 40%; /* 上调蛋糕位置（原50%） */
             left: 50%;
             transform: translate(-50%, -50%);
             display: none;
@@ -143,16 +143,17 @@
             text-align: center;
         }
 
-        /* 蛋糕容器：定位所有分层 */
+        /* 蛋糕容器：定位所有分层（方向修正） */
         .cake {
             position: relative;
-            transform-origin: center bottom;
             width: 220px;
             height: 180px; /* 适配分层高度 */
             margin: 0 auto;
+            /* 确保蛋糕方向正确，无旋转 */
+            transform: rotate(0deg);
         }
 
-        /* 蛋糕分层通用样式 - 粉色系适配 + 掉落动画 */
+        /* 蛋糕分层通用样式 - 粉色系 + 组装动画 */
         .cake-layer {
             position: absolute;
             width: 200px;
@@ -160,32 +161,34 @@
             border-radius: 10px;
             left: 50%;
             transform: translateX(-50%);
-            /* 掉落动画：名称、时长、缓动、填充模式（保持动画结束状态） */
-            animation: fall 1.5s ease-in forwards;
+            /* 组装动画：从下方升起+渐显 */
+            animation: assemble 1s ease-out forwards;
+            /* 初始状态：隐藏在下方 */
+            opacity: 0;
+            transform: translateX(-50%) translateY(500px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        /* 分层1：最底层（先掉落）- 深粉色 */
+        /* 分层1：最底层（最先组装） */
         .layer1 {
             background: linear-gradient(135deg, #f9a8d4, #f472b6);
-            bottom: 0;
-            /* 无延迟，最先开始掉落 */
-            animation-delay: 0s;
+            top: 100px; /* 方向修正：用top定位，从下往上堆叠 */
+            animation-delay: 0s; /* 无延迟，最先出现 */
             z-index: 1;
         }
 
-        /* 分层2：中间层（延迟0.3s）- 中粉色 */
+        /* 分层2：中间层（延迟0.3s） */
         .layer2 {
             background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
-            bottom: 45px;
+            top: 60px; /* 在layer1上方 */
             animation-delay: 0.3s;
             z-index: 2;
         }
 
-        /* 分层3：上层（延迟0.6s）- 浅粉色 */
+        /* 分层3：上层（延迟0.6s） */
         .layer3 {
             background: linear-gradient(135deg, #fdf2f8, #fbcfe8);
-            bottom: 90px;
+            top: 20px; /* 在layer2上方 */
             animation-delay: 0.6s;
             z-index: 3;
         }
@@ -199,8 +202,10 @@
             border-radius: 50% 50% 10px 10px;
             left: 50%;
             transform: translateX(-50%);
-            bottom: 135px;
-            animation: fall 1.5s ease-in forwards;
+            top: 0px; /* 在layer3上方 */
+            animation: assemble 1s ease-out forwards;
+            opacity: 0;
+            transform: translateX(-50%) translateY(500px);
             animation-delay: 0.9s;
             z-index: 4;
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
@@ -215,8 +220,10 @@
             border-radius: 50% 50% 10px 10px;
             left: 50%;
             transform: translateX(-50%) rotate(-15deg);
-            bottom: 160px;
-            animation: fall 1.5s ease-in forwards;
+            top: -15px; /* 在奶油上方 */
+            animation: assemble 1s ease-out forwards;
+            opacity: 0;
+            transform: translateX(-50%) translateY(500px);
             animation-delay: 1.2s;
             z-index: 5;
         }
@@ -234,22 +241,22 @@
             transform: rotate(45deg);
         }
 
-        /* 蜡烛（蛋糕最顶部，朝上 + 同步掉落） */
+        /* 蜡烛（蛋糕最顶部，朝上 + 延迟1.5s组装） */
         .candle {
             width: 12px;
             height: 40px;
             background: linear-gradient(90deg, #ffffff, #fef2f2);
-            margin: 0 auto;
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            bottom: 170px; /* 奶油顶部上方 */
+            top: -40px; /* 在草莓上方，朝上 */
             border-radius: 6px 6px 0 0;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             z-index: 6;
-            /* 蜡烛同步掉落，延迟1.2s（和草莓同步） */
-            animation: fall 1.5s ease-in forwards;
-            animation-delay: 1.2s;
+            animation: assemble 1s ease-out forwards;
+            opacity: 0;
+            transform: translateX(-50%) translateY(500px);
+            animation-delay: 1.5s;
         }
 
         /* 蜡烛装饰 */
@@ -264,35 +271,35 @@
             border-radius: 3px;
         }
 
-        /* 火焰（蜡烛顶端，朝上 + 同步掉落 + 跳动动画） */
+        /* 火焰（蜡烛顶端，朝上 + 延迟1.8s组装 + 跳动） */
         .flame {
             width: 15px;
             height: 25px;
             background: linear-gradient(180deg, #ff9900, #ffd700);
-            margin: 0 auto;
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            bottom: 210px; /* 蜡烛顶部 */
+            top: -60px; /* 蜡烛顶端 */
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
             box-shadow: 0 0 20px #ff9900;
             z-index: 7;
-            /* 火焰同步掉落 + 保留跳动动画 */
             animation: 
-                fall 1.5s ease-in forwards, /* 掉落动画 */
+                assemble 1s ease-out forwards, /* 组装动画 */
                 flame 0.8s infinite alternate; /* 跳动动画 */
-            animation-delay: 1.2s;
+            opacity: 0;
+            transform: translateX(-50%) translateY(500px);
+            animation-delay: 1.8s;
         }
 
-        /* 掉落动画关键帧：向下移动+轻微旋转 */
-        @keyframes fall {
+        /* 组装动画关键帧：从下方升起 + 渐显 */
+        @keyframes assemble {
             0% {
-                transform: translateX(-50%) translateY(0) rotate(0deg);
-                opacity: 1;
+                opacity: 0;
+                transform: translateX(-50%) translateY(500px) rotate(0deg);
             }
             100% {
-                transform: translateX(-50%) translateY(500px) rotate(15deg);
-                opacity: 0.8;
+                opacity: 1;
+                transform: translateX(-50%) translateY(0) rotate(0deg);
             }
         }
 
@@ -302,7 +309,7 @@
             100% { transform: translateX(-50%) scale(1.1) translateY(-2px); }
         }
 
-        /* 5. 交互元素 - 保持原有样式 */
+        /* 5. 交互元素 - 文字改小（核心修改） */
         #interactionArea {
             position: fixed;
             bottom: 20%;
@@ -313,8 +320,9 @@
             text-align: center;
         }
 
+        /* 问题文字改小（原30px→24px） */
         .question {
-            font-size: 30px;
+            font-size: 24px;
             color: #fff;
             margin-bottom: 30px;
             letter-spacing: 3px;
@@ -328,13 +336,14 @@
             margin-bottom: 20px;
         }
 
+        /* 按钮文字改小（原18px→16px） */
         .btn {
             padding: 12px 30px;
             border: 2px solid #fff;
             border-radius: 30px;
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
-            font-size: 18px;
+            font-size: 16px; /* 改小 */
             cursor: pointer;
             transition: all 0.3s ease;
             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -347,9 +356,10 @@
             box-shadow: 0 6px 15px rgba(244, 114, 182, 0.2);
         }
 
+        /* 提示文字改小（原18px→14px） */
         .tip {
             color: #fff;
-            font-size: 18px;
+            font-size: 14px; /* 改小 */
             display: none;
             margin-top: 10px;
             letter-spacing: 1px;
@@ -397,10 +407,10 @@
         <div class="subtitle" id="count1">1</div>
     </div>
 
-    <!-- 3. 蛋糕容器 - 分层掉落结构 + 蜡烛朝上 -->
+    <!-- 3. 蛋糕容器 - 逐层组装 + 方向修正 -->
     <div id="cakeWrapper">
         <div class="cake">
-            <!-- 蛋糕分层（从下到上） -->
+            <!-- 蛋糕分层（从下到上组装：layer1→layer2→layer3） -->
             <div class="cake-layer layer1"></div>
             <div class="cake-layer layer2"></div>
             <div class="cake-layer layer3"></div>
@@ -415,7 +425,7 @@
         </div>
     </div>
 
-    <!-- 4. 交互区域 -->
+    <!-- 4. 交互区域 - 文字已改小 -->
     <div id="interactionArea">
         <div class="question">今天的你快乐吗？</div>
         <div class="btn-group">
@@ -475,7 +485,7 @@
             // 超出索引则结束字幕播放
             if (index >= subtitles.length) {
                 subtitleWrapper.style.display = 'none';
-                startCakeAnimation(); // 启动蛋糕掉落动画
+                startCakeAnimation(); // 启动蛋糕组装动画
                 playMusic();
                 return;
             }
@@ -508,11 +518,11 @@
             }
         }
 
-        // 启动蛋糕分层掉落动画
+        // 启动蛋糕逐层组装动画
         function startCakeAnimation() {
-            cakeWrapper.style.display = 'block'; // 显示蛋糕，自动触发掉落动画
+            cakeWrapper.style.display = 'block'; // 显示蛋糕，自动触发组装动画
             
-            // 蛋糕掉落完成后显示交互按钮（延迟3s，等动画结束）
+            // 组装完成后显示交互按钮（延迟3s，等动画结束）
             setTimeout(() => {
                 document.querySelectorAll('.decor').forEach(el => el.style.display = 'block');
                 interactionArea.style.display = 'block';
