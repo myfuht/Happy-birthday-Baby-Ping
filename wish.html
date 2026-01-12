@@ -14,20 +14,20 @@
 
         /* 1. 纯粉色背景 + 动态爱心装饰 */
         body {
-            background: #ffc2d1; /* 纯净粉色背景 */
+            background: #ffc2d1;
             min-height: 100vh;
             position: relative;
             overflow: hidden;
         }
 
-        /* 动态飘落爱心（背景装饰） */
+        /* 动态飘落爱心 */
         .floating-heart {
             position: absolute;
             color: #f472b6;
             opacity: 0.3;
             font-size: 20px;
             animation: float-down 8s linear infinite;
-            pointer-events: none; /* 不影响点击 */
+            pointer-events: none;
         }
 
         @keyframes float-down {
@@ -47,17 +47,16 @@
             }
         }
 
-        /* 2. 初始点击提示 - 强制居中 + 柔美动画 */
+        /* 2. 初始点击提示 - 手机端适配字号 */
         #clickPrompt {
-            font-size: 45px;
+            font-size: clamp(28px, 8vw, 45px); /* 响应式字号 */
             color: #fff;
             font-weight: bold;
-            letter-spacing: 12px;
+            letter-spacing: 8px;
             text-align: center;
             z-index: 100;
             animation: pulse 2s infinite;
             text-shadow: 0 3px 8px rgba(236, 72, 153, 0.3);
-            /* 绝对居中（优先级最高） */
             position: fixed;
             top: 50%;
             left: 50%;
@@ -69,53 +68,48 @@
             50% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.05); }
         }
 
-        /* 3. 字幕容器 - 强制固定居中（覆盖整个屏幕） */
+        /* 3. 字幕容器 - 手机端适配 */
         #subtitleWrapper {
-            position: fixed; /* 固定定位，不随滚动变化 */
+            position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
             display: none;
-            justify-content: center; /* 水平居中 */
-            align-items: center; /* 垂直居中 */
+            justify-content: center;
+            align-items: center;
             z-index: 90;
-            background: rgba(255, 194, 209, 0.8); /* 半透明粉色叠加，增强层次感 */
+            background: rgba(255, 194, 209, 0.8);
         }
 
-        /* 字幕样式 - 优化居中+绝美动画（支持两行显示） */
         .subtitle {
-            font-size: 70px;
+            font-size: clamp(40px, 12vw, 70px); /* 响应式字号 */
             font-weight: bold;
             color: #ffffff;
-            -webkit-text-stroke: 1.5px #f472b6; /* 柔粉描边 */
-            letter-spacing: 20px;
+            -webkit-text-stroke: 1.5px #f472b6;
+            letter-spacing: 12px;
             text-align: center;
             opacity: 0;
-            white-space: normal; /* 取消单行限制，支持换行 */
+            white-space: normal;
             text-shadow: 0 0 20px rgba(244, 114, 182, 0.8), 0 4px 10px rgba(244, 114, 182, 0.4);
-            /* 初始状态 */
             transform: translate(-50%, -50%) scale(0.8);
             position: absolute;
             top: 50%;
             left: 50%;
-            line-height: 1.2; /* 两行间距优化 */
+            line-height: 1.2;
         }
 
-        /* 专门适配Happy Birthday两行样式 */
         .subtitle.two-line {
-            font-size: 60px; /* 两行时字号稍小，避免溢出 */
-            letter-spacing: 15px;
+            font-size: clamp(30px, 10vw, 60px);
+            letter-spacing: 10px;
         }
 
-        /* 字幕显示动画：淡入+缩放+发光 */
         .subtitle.show {
             opacity: 1;
             transform: translate(-50%, -50%) scale(1);
             animation: subtitleShow 0.6s ease-out forwards, subtitleGlow 1.5s ease-in-out infinite;
         }
 
-        /* 字幕隐藏动画：淡出+缩放 */
         .subtitle.hide {
             opacity: 0;
             transform: translate(-50%, -50%) scale(0.8);
@@ -132,103 +126,97 @@
             50% { text-shadow: 0 0 30px rgba(244, 114, 182, 1), 0 6px 15px rgba(244, 114, 182, 0.6); }
         }
 
-        /* 4. 蛋糕容器 - 逐层组装 + 方向修正 + 位置上调 */
+        /* 4. 蛋糕容器 - 手机端核心适配 */
         #cakeWrapper {
             position: fixed;
-            top: 40%; /* 上调蛋糕位置（原50%） */
+            top: 35%; /* 手机端再上调 */
             left: 50%;
             transform: translate(-50%, -50%);
             display: none;
             z-index: 80;
             text-align: center;
+            /* 限制蛋糕最大宽度，适配手机 */
+            max-width: 90vw;
         }
 
-        /* 蛋糕容器：定位所有分层（方向修正） */
         .cake {
             position: relative;
-            width: 220px;
-            height: 180px; /* 适配分层高度 */
+            width: clamp(180px, 50vw, 220px); /* 响应式宽度 */
+            height: clamp(140px, 40vw, 180px);
             margin: 0 auto;
-            /* 确保蛋糕方向正确，无旋转 */
             transform: rotate(0deg);
         }
 
-        /* 蛋糕分层通用样式 - 粉色系 + 组装动画 */
+        /* 蛋糕分层通用样式 - 手机端动画距离改用相对单位 */
         .cake-layer {
             position: absolute;
-            width: 200px;
-            height: 40px;
+            width: clamp(150px, 45vw, 200px); /* 响应式宽度 */
+            height: clamp(30px, 10vw, 40px);
             border-radius: 10px;
             left: 50%;
             transform: translateX(-50%);
-            /* 组装动画：从下方升起+渐显 */
+            /* 核心修复：动画移动距离用30vh（相对屏幕高度），手机不会移出可视区 */
             animation: assemble 1s ease-out forwards;
-            /* 初始状态：隐藏在下方 */
             opacity: 0;
-            transform: translateX(-50%) translateY(500px);
+            transform: translateX(-50%) translateY(30vh); /* 替换500px为30vh */
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        /* 分层1：最底层（最先组装） */
+        /* 分层定位 - 响应式top值 */
         .layer1 {
             background: linear-gradient(135deg, #f9a8d4, #f472b6);
-            top: 100px; /* 方向修正：用top定位，从下往上堆叠 */
-            animation-delay: 0s; /* 无延迟，最先出现 */
+            top: clamp(80px, 25vw, 100px);
+            animation-delay: 0s;
             z-index: 1;
         }
 
-        /* 分层2：中间层（延迟0.3s） */
         .layer2 {
             background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
-            top: 60px; /* 在layer1上方 */
+            top: clamp(50px, 18vw, 60px);
             animation-delay: 0.3s;
             z-index: 2;
         }
 
-        /* 分层3：上层（延迟0.6s） */
         .layer3 {
             background: linear-gradient(135deg, #fdf2f8, #fbcfe8);
-            top: 20px; /* 在layer2上方 */
+            top: clamp(20px, 10vw, 20px);
             animation-delay: 0.6s;
             z-index: 3;
         }
 
-        /* 奶油顶（延迟0.9s） */
         .cream {
             position: absolute;
-            width: 160px;
-            height: 30px;
+            width: clamp(120px, 35vw, 160px);
+            height: clamp(20px, 8vw, 30px);
             background-color: #fff;
             border-radius: 50% 50% 10px 10px;
             left: 50%;
             transform: translateX(-50%);
-            top: 0px; /* 在layer3上方 */
+            top: 0px;
             animation: assemble 1s ease-out forwards;
             opacity: 0;
-            transform: translateX(-50%) translateY(500px);
+            transform: translateX(-50%) translateY(30vh);
             animation-delay: 0.9s;
             z-index: 4;
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
 
-        /* 草莓装饰（延迟1.2s） */
         .strawberry {
             position: absolute;
-            width: 30px;
-            height: 30px;
+            width: clamp(20px, 8vw, 30px);
+            height: clamp(20px, 8vw, 30px);
             background: linear-gradient(135deg, #ef4444, #dc2626);
             border-radius: 50% 50% 10px 10px;
             left: 50%;
             transform: translateX(-50%) rotate(-15deg);
-            top: -15px; /* 在奶油上方 */
+            top: clamp(-10px, -5vw, -15px);
             animation: assemble 1s ease-out forwards;
             opacity: 0;
-            transform: translateX(-50%) translateY(500px);
+            transform: translateX(-50%) translateY(30vh);
             animation-delay: 1.2s;
             z-index: 5;
         }
 
-        /* 草莓蒂 */
         .strawberry::before {
             content: "";
             position: absolute;
@@ -241,25 +229,23 @@
             transform: rotate(45deg);
         }
 
-        /* 蜡烛（蛋糕最顶部，朝上 + 延迟1.5s组装） */
         .candle {
-            width: 12px;
-            height: 40px;
+            width: clamp(8px, 3vw, 12px);
+            height: clamp(30px, 10vw, 40px);
             background: linear-gradient(90deg, #ffffff, #fef2f2);
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            top: -40px; /* 在草莓上方，朝上 */
+            top: clamp(-30px, -10vw, -40px);
             border-radius: 6px 6px 0 0;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             z-index: 6;
             animation: assemble 1s ease-out forwards;
             opacity: 0;
-            transform: translateX(-50%) translateY(500px);
+            transform: translateX(-50%) translateY(30vh);
             animation-delay: 1.5s;
         }
 
-        /* 蜡烛装饰 */
         .candle::after {
             content: "";
             position: absolute;
@@ -271,31 +257,30 @@
             border-radius: 3px;
         }
 
-        /* 火焰（蜡烛顶端，朝上 + 延迟1.8s组装 + 跳动） */
         .flame {
-            width: 15px;
-            height: 25px;
+            width: clamp(10px, 4vw, 15px);
+            height: clamp(15px, 8vw, 25px);
             background: linear-gradient(180deg, #ff9900, #ffd700);
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            top: -60px; /* 蜡烛顶端 */
+            top: clamp(-45px, -15vw, -60px);
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
             box-shadow: 0 0 20px #ff9900;
             z-index: 7;
             animation: 
-                assemble 1s ease-out forwards, /* 组装动画 */
-                flame 0.8s infinite alternate; /* 跳动动画 */
+                assemble 1s ease-out forwards,
+                flame 0.8s infinite alternate;
             opacity: 0;
-            transform: translateX(-50%) translateY(500px);
+            transform: translateX(-50%) translateY(30vh);
             animation-delay: 1.8s;
         }
 
-        /* 组装动画关键帧：从下方升起 + 渐显 */
+        /* 组装动画：移动距离用相对单位，适配所有屏幕 */
         @keyframes assemble {
             0% {
                 opacity: 0;
-                transform: translateX(-50%) translateY(500px) rotate(0deg);
+                transform: translateX(-50%) translateY(30vh) rotate(0deg);
             }
             100% {
                 opacity: 1;
@@ -303,16 +288,15 @@
             }
         }
 
-        /* 火焰跳动动画 */
         @keyframes flame {
             0% { transform: translateX(-50%) scale(0.9) translateY(2px); }
             100% { transform: translateX(-50%) scale(1.1) translateY(-2px); }
         }
 
-        /* 5. 交互元素 - 文字改小（核心修改） */
+        /* 5. 交互元素 - 手机端文字进一步改小 */
         #interactionArea {
             position: fixed;
-            bottom: 20%;
+            bottom: 15%; /* 手机端上移，避免被遮挡 */
             left: 50%;
             transform: translateX(-50%);
             display: none;
@@ -320,30 +304,29 @@
             text-align: center;
         }
 
-        /* 问题文字改小（原30px→24px） */
         .question {
-            font-size: 24px;
+            font-size: clamp(18px, 5vw, 24px);
             color: #fff;
-            margin-bottom: 30px;
-            letter-spacing: 3px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
             text-shadow: 0 3px 8px rgba(236, 72, 153, 0.3);
         }
 
         .btn-group {
             display: flex;
-            gap: 40px;
+            gap: 20px; /* 手机端缩小间距 */
             justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap; /* 按钮换行 */
         }
 
-        /* 按钮文字改小（原18px→16px） */
         .btn {
-            padding: 12px 30px;
+            padding: 10px 20px; /* 手机端缩小按钮 */
             border: 2px solid #fff;
             border-radius: 30px;
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
-            font-size: 16px; /* 改小 */
+            font-size: clamp(14px, 4vw, 16px);
             cursor: pointer;
             transition: all 0.3s ease;
             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -356,17 +339,16 @@
             box-shadow: 0 6px 15px rgba(244, 114, 182, 0.2);
         }
 
-        /* 提示文字改小（原18px→14px） */
         .tip {
             color: #fff;
-            font-size: 14px; /* 改小 */
+            font-size: clamp(12px, 3vw, 14px);
             display: none;
             margin-top: 10px;
             letter-spacing: 1px;
             text-shadow: 0 2px 4px rgba(236, 72, 153, 0.2);
         }
 
-        /* 装饰元素 - 保持原有 */
+        /* 装饰元素 */
         .decor {
             position: absolute;
             background: rgba(255, 255, 255, 0.25);
@@ -386,15 +368,15 @@
     <!-- 音频元素 -->
     <audio id="birthdayMusic" preload="auto">
         <source src="jimo.mp3" type="audio/mpeg">
-    </audio>
+    
 
-    <!-- 动态爱心背景（自动生成） -->
+    <!-- 动态爱心背景 -->
     <div id="heartContainer"></div>
 
-    <!-- 1. 初始点击提示 -->
+    <!-- 初始点击提示 -->
     <div id="clickPrompt">点击页面获取祝福 ❤️</div>
 
-    <!-- 2. 字幕容器 - Happy Birthday两行显示 -->
+    <!-- 字幕容器 -->
     <div id="subtitleWrapper">
         <div class="subtitle" id="subtitle1">Hi宝宝</div>
         <div class="subtitle" id="subtitle2">祝你</div>
@@ -407,25 +389,20 @@
         <div class="subtitle" id="count1">1</div>
     </div>
 
-    <!-- 3. 蛋糕容器 - 逐层组装 + 方向修正 -->
+    <!-- 蛋糕容器 -->
     <div id="cakeWrapper">
         <div class="cake">
-            <!-- 蛋糕分层（从下到上组装：layer1→layer2→layer3） -->
             <div class="cake-layer layer1"></div>
             <div class="cake-layer layer2"></div>
             <div class="cake-layer layer3"></div>
-            <!-- 奶油顶 -->
             <div class="cream"></div>
-            <!-- 草莓装饰 -->
             <div class="strawberry"></div>
-            <!-- 蜡烛（最顶部，朝上） -->
             <div class="candle"></div>
-            <!-- 火焰 -->
             <div class="flame"></div>
         </div>
     </div>
 
-    <!-- 4. 交互区域 - 文字已改小 -->
+    <!-- 交互区域 -->
     <div id="interactionArea">
         <div class="question">今天的你快乐吗？</div>
         <div class="btn-group">
@@ -442,16 +419,13 @@
     <div class="decor" style="width: 20px; height: 20px; bottom: 10%; right: 15%; animation-delay: 3s;"></div>
 
     <script>
-        // ========== 动态生成飘落爱心 ==========
         function createFloatingHearts() {
             const container = document.getElementById('heartContainer');
-            const heartCount = 15; // 爱心数量
-
+            const heartCount = 15;
             for (let i = 0; i < heartCount; i++) {
                 const heart = document.createElement('div');
                 heart.className = 'floating-heart';
                 heart.innerText = '❤️';
-                // 随机位置和动画延迟
                 heart.style.left = `${Math.random() * 100}vw`;
                 heart.style.animationDelay = `${Math.random() * 8}s`;
                 heart.style.fontSize = `${15 + Math.random() * 10}px`;
@@ -459,7 +433,6 @@
             }
         }
 
-        // 获取核心DOM元素
         const clickPrompt = document.getElementById('clickPrompt');
         const subtitleWrapper = document.getElementById('subtitleWrapper');
         const cakeWrapper = document.getElementById('cakeWrapper');
@@ -467,12 +440,11 @@
         const birthdayMusic = document.getElementById('birthdayMusic');
         const happyTip = document.getElementById('happyTip');
         
-        // 字幕列表（顺序严格不变）
         const subtitles = [
             { id: 'subtitle1', time: 1500 },
             { id: 'subtitle2', time: 1500 },
             { id: 'subtitle3', time: 1500 },
-            { id: 'subtitle4', time: 2000 }, // Happy Birthday两行显示，时长稍长
+            { id: 'subtitle4', time: 2000 },
             { id: 'subtitle5', time: 1500 },
             { id: 'subtitle6', time: 1500 },
             { id: 'count3', time: 1000 },
@@ -480,35 +452,25 @@
             { id: 'count1', time: 1000 }
         ];
 
-        // ========== 核心：字幕顺序播放逻辑 ==========
         function playSubtitles(index = 0) {
-            // 超出索引则结束字幕播放
             if (index >= subtitles.length) {
                 subtitleWrapper.style.display = 'none';
-                startCakeAnimation(); // 启动蛋糕组装动画
+                startCakeAnimation();
                 playMusic();
                 return;
             }
-
-            // 隐藏所有字幕
             document.querySelectorAll('.subtitle').forEach(el => {
                 el.classList.remove('show');
                 el.classList.add('hide');
             });
-
-            // 获取当前字幕
             const currentSub = document.getElementById(subtitles[index].id);
-            // 显示当前字幕（居中）
             currentSub.classList.remove('hide');
             currentSub.classList.add('show');
-
-            // 延迟指定时间后，播放下一个字幕
             setTimeout(() => {
                 playSubtitles(index + 1);
             }, subtitles[index].time);
         }
 
-        // 播放背景音乐
         function playMusic() {
             try {
                 birthdayMusic.play();
@@ -518,44 +480,34 @@
             }
         }
 
-        // 启动蛋糕逐层组装动画
         function startCakeAnimation() {
-            cakeWrapper.style.display = 'block'; // 显示蛋糕，自动触发组装动画
-            
-            // 组装完成后显示交互按钮（延迟3s，等动画结束）
+            cakeWrapper.style.display = 'block';
             setTimeout(() => {
                 document.querySelectorAll('.decor').forEach(el => el.style.display = 'block');
                 interactionArea.style.display = 'block';
             }, 3000);
         }
 
-        // 启动字幕流程
         function startSubtitleFlow() {
-            clickPrompt.style.display = 'none'; // 隐藏初始提示
-            subtitleWrapper.style.display = 'flex'; // 显示字幕容器
-            playSubtitles(0); // 从第一个字幕开始播放
+            clickPrompt.style.display = 'none';
+            subtitleWrapper.style.display = 'flex';
+            playSubtitles(0);
         }
 
-        // 绑定按钮事件
         function bindButtonEvents() {
             document.getElementById('unhappyBtn').addEventListener('click', () => {
                 happyTip.style.display = 'block';
                 setTimeout(() => happyTip.style.display = 'none', 3000);
             });
-
             document.getElementById('happyBtn').addEventListener('click', () => {
                 birthdayMusic.pause();
                 alert('🎉 生日快乐我的萍宝宝！愿你每天都开开心心～ 🎂');
             });
         }
 
-        // 页面加载完成后初始化
         window.onload = function() {
-            // 生成动态爱心背景
             createFloatingHearts();
-            // 绑定点击事件（确保只触发一次）
             document.body.addEventListener('click', startSubtitleFlow, { once: true });
-            // 绑定按钮事件
             bindButtonEvents();
         };
     </script>
