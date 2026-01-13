@@ -1,1 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专属惊喜最终章 ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", "PingFang SC", "幼圆", sans-serif;
+        }
 
+        body {
+            background: linear-gradient(135deg, #f3e8ff, #fdf2f8);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 背景爱心装饰（延续风格） */
+        .heart {
+            position: absolute;
+            font-size: 25px;
+            color: #ec4899;
+            opacity: 0.2;
+            animation: float 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(15deg); }
+        }
+
+        /* 主内容卡片 */
+        .main-card {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 30px;
+            box-shadow: 0 15px 50px rgba(236, 72, 153, 0.15);
+            text-align: center;
+            z-index: 10;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        /* 标题样式 */
+        .title {
+            color: #ec4899;
+            font-size: 32px;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 8px rgba(236, 72, 153, 0.1);
+        }
+
+        /* 祝福语样式 */
+        .blessing {
+            color: #8b5cf6;
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        /* 装饰按钮（可选） */
+        .decor-btn {
+            padding: 14px 40px;
+            background: linear-gradient(90deg, #a855f7, #ec4899);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.2);
+        }
+
+        .decor-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景爱心（随机生成） -->
+    <div id="heartContainer"></div>
+
+    <!-- 主内容卡片 -->
+    <div class="main-card">
+        <h1 class="title">致最爱的萍萍 💖</h1>
+        <p class="blessing">
+            愿你的每一个生日都充满甜蜜，<br>
+            愿你的每一天都像糖果一样甜，<br>
+            愿我们的故事永远未完待续～<br>
+            生日快乐，我的专属宝贝 ❤️
+        </p>
+        <button class="decor-btn" id="backBtn">收藏这份美好</button>
+    </div>
+
+    <!-- 自动播放的新音乐（替换为你的音乐文件名） -->
+    <audio id="jimo.mp3" preload="auto" loop>
+        <source src="你的新音乐文件名.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // 生成背景爱心
+        function createHearts() {
+            const container = document.getElementById('heartContainer');
+            const count = 20;
+            for (let i = 0; i < count; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerText = '❤️';
+                heart.style.left = `${Math.random() * 100}vw`;
+                heart.style.top = `${Math.random() * 100}vh`;
+                heart.style.animationDelay = `${Math.random() * 8}s`;
+                container.appendChild(heart);
+            }
+        }
+
+        // 自动播放新音乐（处理浏览器自动播放限制）
+        function playNewMusic() {
+            const newMusic = document.getElementById('newMusic');
+            try {
+                // 尝试自动播放
+                newMusic.play();
+            } catch (err) {
+                // 自动播放失败时，提示点击页面播放
+                alert("请点击页面允许播放专属音乐～");
+                document.body.addEventListener('click', () => {
+                    newMusic.play();
+                }, { once: true });
+            }
+        }
+
+        // 页面加载初始化
+        window.onload = function() {
+            createHearts();
+            playNewMusic();
+
+            // 按钮点击事件（可选，可自定义）
+            document.getElementById('backBtn').onclick = () => {
+                alert('这份美好会永远留在心里～');
+            };
+        };
+    </script>
+</body>
+</html>
