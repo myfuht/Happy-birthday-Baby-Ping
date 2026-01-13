@@ -35,7 +35,6 @@
             100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
 
-        /* 初始点击提示（移除!important，避免样式覆盖） */
         #clickPrompt {
             font-size: 45px;
             color: #fff;
@@ -49,15 +48,12 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            /* 移除!important，确保点击后能隐藏 */
-            display: block;
         }
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
             50% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.05); }
         }
 
-        /* 字幕容器 */
         #subtitleWrapper {
             position: fixed;
             top: 0;
@@ -79,49 +75,28 @@
             text-align: center;
             opacity: 0;
             white-space: normal;
-            text-shadow: 0 0 20px rgba(244, 114, 182, 0.8), 0 4px 10px rgba(244, 114, 182, 0.4);
+            text-shadow: 0 0 20px rgba(244, 114, 182, 0.8);
             transform: translate(-50%, -50%) scale(0.8);
             position: absolute;
             top: 50%;
             left: 50%;
             line-height: 1.2;
         }
-        .subtitle.two-line {
-            font-size: 60px;
-            letter-spacing: 15px;
-        }
+        .subtitle.two-line { font-size: 60px; letter-spacing: 15px; }
         .subtitle.show {
             opacity: 1;
             transform: translate(-50%, -50%) scale(1);
             animation: subtitleShow 0.6s ease-out forwards, subtitleGlow 1.5s ease-in-out infinite;
         }
-        .subtitle.hide {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.8);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-        @keyframes subtitleShow {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-        @keyframes subtitleGlow {
-            0%, 100% { text-shadow: 0 0 20px rgba(244, 114, 182, 0.8); }
-            50% { text-shadow: 0 0 30px rgba(244, 114, 182, 1); }
-        }
+        @keyframes subtitleShow { 0% { opacity: 0; scale: 0.8; } 100% { opacity: 1; scale: 1; } }
+        @keyframes subtitleGlow { 0%,100% { text-shadow: 0 0 20px #f472b6; } 50% { text-shadow: 0 0 30px #f472b6; } }
 
-        /* 蛋糕掉落动画（时长1.5s，确保每层掉落完整） */
+        /* ========== 重新设计的蛋糕样式（核心修改） ========== */
         @keyframes fall {
-            0% {
-                transform: translateX(-50%) translateY(-100%);
-                opacity: 0;
-            }
-            100% {
-                transform: translateX(-50%) translateY(0);
-                opacity: 1;
-            }
+            0% { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+            100% { transform: translateX(-50%) translateY(0); opacity: 1; }
         }
 
-        /* 蛋糕容器（初始在屏幕上方，滑到中间后触发分层掉落） */
         #cakeWrapper {
             position: fixed;
             top: -20vh;
@@ -130,244 +105,302 @@
             display: none;
             z-index: 80;
             text-align: center;
-            /* 容器滑到中间的过渡动画 */
             transition: top 1s ease-out, transform 1s ease-out;
         }
+
+        /* 蛋糕主体：下宽上窄的甜美造型 */
         .cake {
             position: relative;
-            width: 220px;
-            height: 250px;
+            width: 260px; /* 加宽底层，更饱满 */
+            height: 280px;
             margin: 0 auto;
         }
-        /* 蛋糕分层通用样式（时长1.5s，确保每层掉落完整） */
+
+        /* 蛋糕分层：渐变尺寸+奶油花边 */
         .cake-layer {
             position: absolute;
-            width: 200px;
-            height: 40px;
-            border-radius: 10px;
             left: 50%;
             transform: translateX(-50%) translateY(-100%);
             animation: fall 1.5s ease-out forwards;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            opacity: 0; /* 初始透明，避免提前显示 */
+            animation-play-state: paused;
+            opacity: 0;
+            border-radius: 12px;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.1);
         }
 
-        /* ========== 核心修改：分层依次掉落（上一层掉完下一层才开始） ========== */
-        /* 底层：第一个掉落，延迟0s */
+        /* 底层：最宽，马卡龙浅粉 */
         .layer1 {
-            background: linear-gradient(135deg, #f9a8d4, #f472b6);
-            animation-delay: 0s;
+            width: 260px;
+            height: 50px;
+            background: linear-gradient(135deg, #fce7f3, #fbcfe8);
+            top: calc(100% - 50px);
             z-index: 1;
-            top: calc(100% - 40px);
         }
-        /* 中层：底层掉完（1.5s）+ 间隔0.2s，延迟1.7s */
+        /* 底层奶油花边 */
+        .layer1::after {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, #fff 0%, #fff 8%, transparent 10%, transparent 18%, #fff 20%, #fff 28%, transparent 30%, transparent 38%, #fff 40%, #fff 48%, transparent 50%, transparent 58%, #fff 60%, #fff 68%, transparent 70%, transparent 78%, #fff 80%, #fff 88%, transparent 90%, transparent 98%, #fff 100%);
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        /* 中层：稍窄，蜜桃粉 */
         .layer2 {
+            width: 220px;
+            height: 50px;
             background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
-            animation-delay: 1.7s;
+            top: calc(100% - 50px*2 - 8px);
             z-index: 2;
-            top: calc(100% - 40px * 2 - 5px);
         }
-        /* 上层：中层掉完（1.5s）+ 间隔0.2s，延迟3.4s */
+        .layer2::after {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, #fff 0%, #fff 8%, transparent 10%, transparent 18%, #fff 20%, #fff 28%, transparent 30%, transparent 38%, #fff 40%, #fff 48%, transparent 50%, transparent 58%, #fff 60%, #fff 68%, transparent 70%, transparent 78%, #fff 80%, #fff 88%, transparent 90%, transparent 98%, #fff 100%);
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        /* 上层：最窄，浅玫粉 */
         .layer3 {
-            background: linear-gradient(135deg, #fdf2f8, #fbcfe8);
-            animation-delay: 3.4s;
+            width: 180px;
+            height: 50px;
+            background: linear-gradient(135deg, #f9a8d4, #f472b6);
+            top: calc(100% - 50px*3 - 16px);
             z-index: 3;
-            top: calc(100% - 40px * 3 - 10px);
         }
-        /* 奶油：上层掉完+间隔0.2s，延迟5.1s */
+        .layer3::after {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, #fff 0%, #fff 8%, transparent 10%, transparent 18%, #fff 20%, #fff 28%, transparent 30%, transparent 38%, #fff 40%, #fff 48%, transparent 50%, transparent 58%, #fff 60%, #fff 68%, transparent 70%, transparent 78%, #fff 80%, #fff 88%, transparent 90%, transparent 98%, #fff 100%);
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        /* 奶油顶：蓬松造型+糖粒装饰 */
         .cream {
             position: absolute;
             width: 160px;
-            height: 30px;
-            background-color: #fff;
-            border-radius: 50% 50% 10px 10px;
+            height: 40px;
+            background: linear-gradient(135deg, #ffffff, #fef7fb);
+            border-radius: 50% 50% 12px 12px;
             left: 50%;
             transform: translateX(-50%) translateY(-100%);
             animation: fall 1.5s ease-out forwards;
-            animation-delay: 5.1s;
-            z-index: 4;
-            top: calc(100% - 40px * 3 - 10px - 30px);
+            animation-play-state: paused;
             opacity: 0;
+            top: calc(100% - 50px*3 - 16px - 40px);
+            z-index: 4;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
         }
-        /* 草莓：奶油掉完+间隔0.2s，延迟6.8s */
+        /* 糖粒装饰 */
+        .cream::after {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #f472b6 2px, transparent 2px);
+            background-size: 15px 15px;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* 多颗草莓装饰（更可爱） */
         .strawberry {
             position: absolute;
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             background: linear-gradient(135deg, #ef4444, #dc2626);
             border-radius: 50% 50% 10px 10px;
             left: 50%;
             transform: translateX(-50%) rotate(-15deg) translateY(-100%);
             animation: fall 1.5s ease-out forwards;
-            animation-delay: 6.8s;
-            z-index: 5;
-            top: calc(100% - 40px * 3 - 10px - 30px - 30px);
+            animation-play-state: paused;
             opacity: 0;
+            top: calc(100% - 50px*3 - 16px - 40px - 35px);
+            z-index: 5;
         }
         .strawberry::before {
             content: "";
             position: absolute;
-            top: -5px;
-            left: 8px;
-            width: 10px;
-            height: 10px;
-            background: #16a34a;
+            top: -8px;
+            left: 10px;
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(135deg, #16a34a, #15803d);
             border-radius: 50% 0 50% 0;
             transform: rotate(45deg);
         }
-        /* 蜡烛：草莓掉完+间隔0.2s，延迟8.5s */
+        /* 第二颗草莓 */
+        .strawberry-2 {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-radius: 50% 50% 10px 10px;
+            left: 35%;
+            transform: translateX(-50%) rotate(10deg) translateY(-100%);
+            animation: fall 1.5s ease-out forwards;
+            animation-play-state: paused;
+            opacity: 0;
+            top: calc(100% - 50px*3 - 16px - 40px - 30px);
+            z-index: 5;
+        }
+        .strawberry-2::before {
+            content: "";
+            position: absolute;
+            top: -6px;
+            left: 8px;
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            border-radius: 50% 0 50% 0;
+            transform: rotate(45deg);
+        }
+        /* 第三颗草莓 */
+        .strawberry-3 {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-radius: 50% 50% 10px 10px;
+            left: 65%;
+            transform: translateX(-50%) rotate(-20deg) translateY(-100%);
+            animation: fall 1.5s ease-out forwards;
+            animation-play-state: paused;
+            opacity: 0;
+            top: calc(100% - 50px*3 - 16px - 40px - 30px);
+            z-index: 5;
+        }
+        .strawberry-3::before {
+            content: "";
+            position: absolute;
+            top: -6px;
+            left: 8px;
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            border-radius: 50% 0 50% 0;
+            transform: rotate(45deg);
+        }
+
+        /* 精致蜡烛：带烛芯 */
         .candle {
-            width: 12px;
-            height: 40px;
+            width: 14px;
+            height: 45px;
             background: linear-gradient(90deg, #ffffff, #fef2f2);
             left: 50%;
             transform: translateX(-50%) translateY(-100%);
             position: absolute;
-            border-radius: 6px 6px 0 0;
+            border-radius: 8px 8px 0 0;
             z-index: 6;
             animation: fall 1.5s ease-out forwards;
-            animation-delay: 8.5s;
-            top: calc(100% - 40px * 3 - 10px - 30px - 30px - 40px);
+            animation-play-state: paused;
             opacity: 0;
+            top: calc(100% - 50px*3 - 16px - 40px - 35px - 45px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
+        /* 烛芯 */
         .candle::after {
             content: "";
             position: absolute;
             top: 5px;
-            left: 2px;
-            width: 8px;
-            height: 5px;
-            background: #fef2f2;
-            border-radius: 3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 8px;
+            background: #78350f;
+            border-radius: 1px;
         }
-        /* 火焰：蜡烛掉完+间隔0.2s，延迟10.2s */
+
+        /* 生动火焰：暖橙渐变 */
         .flame {
-            width: 15px;
-            height: 25px;
-            background: linear-gradient(180deg, #ff9900, #ffd700);
+            width: 18px;
+            height: 30px;
+            background: linear-gradient(180deg, #ff7800, #ffd700, #fff9c4);
             left: 50%;
             transform: translateX(-50%) translateY(-100%);
             position: absolute;
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            box-shadow: 0 0 20px #ff9900;
+            box-shadow: 0 0 25px #ff9900, 0 0 10px rgba(255,153,0,0.5);
             z-index: 7;
-            animation: 
-                fall 1.5s ease-out forwards,
-                flame 0.8s infinite alternate;
-            animation-delay: 10.2s;
-            top: calc(100% - 40px * 3 - 10px - 30px - 30px - 40px - 25px);
+            animation: fall 1.5s ease-out forwards, flame 0.8s infinite alternate;
+            animation-play-state: paused;
             opacity: 0;
+            top: calc(100% - 50px*3 - 16px - 40px - 35px - 45px - 30px);
             cursor: pointer;
-        }
-        /* 火焰熄灭动画 */
-        .flame.hide {
-            animation: flame-hide 0.5s ease-out forwards !important;
         }
         @keyframes flame {
             0% { transform: translateX(-50%) scale(0.9) translateY(2px); }
             100% { transform: translateX(-50%) scale(1.1) translateY(-2px); }
+        }
+        .flame.hide {
+            animation: flame-hide 0.5s ease-out forwards !important;
         }
         @keyframes flame-hide {
             0% { opacity: 1; transform: translateX(-50%) scale(1); }
             100% { opacity: 0; transform: translateX(-50%) scale(0.5); }
         }
 
-        /* 爆炸爱心 */
+        /* ========== 原有功能样式（无修改） ========== */
         .explosion-heart {
-            position: absolute;
-            color: #ff4d94;
-            font-size: 25px;
-            pointer-events: none;
-            z-index: 95;
+            position: absolute; color: #ff4d94; font-size:25px;
+            pointer-events: none; z-index:95;
             animation: explosion 1.2s ease-out forwards;
         }
         @keyframes explosion {
-            0% {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
-            100% {
-                opacity: 0;
-                transform: translate(var(--x), var(--y)) rotate(360deg) scale(0.5);
-            }
+            0% { opacity:1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity:0; transform: translate(var(--x), var(--y)) rotate(360deg) scale(0.5); }
         }
-
-        /* 交互区域（底部显示） */
         #interactionArea {
-            position: fixed;
-            bottom: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            display: none;
-            z-index: 70;
-            text-align: center;
-            width: 90%;
+            position: fixed; bottom:10%; left:50%; transform: translateX(-50%);
+            display: none; z-index:70; text-align: center; width:90%;
         }
-        .question {
-            font-size: 30px;
-            color: #fff;
-            margin-bottom: 20px;
-            letter-spacing: 3px;
-        }
-        .btn-group {
-            display: flex;
-            gap: 30px;
-            justify-content: center;
-            margin-bottom: 10px;
-        }
+        .question { font-size:30px; color:#fff; margin-bottom:20px; letter-spacing:3px; }
+        .btn-group { display:flex; gap:30px; justify-content:center; margin-bottom:10px; }
         .btn {
-            padding: 15px 40px;
-            border: 2px solid #fff;
-            border-radius: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            padding:15px 40px; border:2px solid #fff; border-radius:30px;
+            background: rgba(255,255,255,0.1); color:#fff; font-size:20px;
+            cursor: pointer; transition: all 0.3s ease;
         }
-        .btn:hover {
-            background: #fff;
-            color: #f472b6;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(244, 114, 182, 0.2);
-        }
-        .tip {
-            color: #fff;
-            font-size: 18px;
-            display: none;
-            margin-top: 10px;
-        }
-
-        /* 装饰元素 */
+        .btn:hover { background:#fff; color:#f472b6; transform: translateY(-3px); box-shadow:0 6px 15px rgba(244,114,182,0.2); }
+        .tip { color:#fff; font-size:18px; display:none; margin-top:10px; }
         .decor {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.25);
-            border-radius: 12px;
-            animation: float 8s infinite ease-in-out;
-            display: none;
-            z-index: 60;
+            position: absolute; background: rgba(255,255,255,0.25); border-radius:12px;
+            animation: float 8s infinite ease-in-out; display:none; z-index:60;
         }
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.2; }
-            50% { transform: translateY(-30px) rotate(15deg); opacity: 0.5; }
-        }
+        @keyframes float { 0%,100% { transform: translateY(0) rotate(0deg); opacity:0.2; } 50% { transform: translateY(-30px) rotate(15deg); opacity:0.5; } }
     </style>
 </head>
 <body>
-    <!-- 音频元素（已闭合） -->
+    <!-- 音频元素（原有） -->
     <audio id="birthdayMusic" preload="auto">
         <source src="jimo.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- 动态爱心背景 -->
+    <!-- 动态爱心背景（原有） -->
     <div id="heartContainer"></div>
-    <!-- 爆炸爱心容器 -->
+    <!-- 爆炸爱心容器（原有） -->
     <div id="explosionContainer"></div>
 
-    <!-- 初始点击提示 -->
+    <!-- 初始点击提示（原有） -->
     <div id="clickPrompt">点击页面获取祝福 ❤️</div>
 
-    <!-- 字幕容器 -->
+    <!-- 字幕容器（原有） -->
     <div id="subtitleWrapper">
         <div class="subtitle" id="subtitle1">Hi宝宝</div>
         <div class="subtitle" id="subtitle2">祝你</div>
@@ -380,7 +413,7 @@
         <div class="subtitle" id="count1">1</div>
     </div>
 
-    <!-- 蛋糕容器 -->
+    <!-- 蛋糕容器（仅新增多颗草莓，其他结构不变） -->
     <div id="cakeWrapper">
         <div class="cake">
             <div class="cake-layer layer1"></div>
@@ -388,12 +421,14 @@
             <div class="cake-layer layer3"></div>
             <div class="cream"></div>
             <div class="strawberry"></div>
+            <div class="strawberry-2"></div>
+            <div class="strawberry-3"></div>
             <div class="candle"></div>
             <div class="flame" id="flame"></div>
         </div>
     </div>
 
-    <!-- 交互区域 -->
+    <!-- 交互区域（原有） -->
     <div id="interactionArea">
         <div class="question">今天的你快乐吗？</div>
         <div class="btn-group">
@@ -403,18 +438,17 @@
         <div class="tip" id="happyTip">萍宝宝不允许不开心哦~请点击非常快乐</div>
     </div>
 
-    <!-- 装饰元素 -->
-    <div class="decor" style="width: 20px; height: 20px; top: 20%; left: 15%; animation-delay: 0s;"></div>
-    <div class="decor" style="width: 30px; height: 30px; top: 10%; right: 20%; animation-delay: 1s;"></div>
-    <div class="decor" style="width: 40px; height: 40px; bottom: 20%; left: 25%; animation-delay: 2s;"></div>
-    <div class="decor" style="width: 20px; height: 20px; bottom: 10%; right: 15%; animation-delay: 3s;"></div>
+    <!-- 装饰元素（原有） -->
+    <div class="decor" style="width:20px;height:20px;top:20%;left:15%;animation-delay:0s;"></div>
+    <div class="decor" style="width:30px;height:30px;top:10%;right:20%;animation-delay:1s;"></div>
+    <div class="decor" style="width:40px;height:40px;bottom:20%;left:25%;animation-delay:2s;"></div>
+    <div class="decor" style="width:20px;height:20px;bottom:10%;right:15%;animation-delay:3s;"></div>
 
     <script>
-        // 生成动态爱心
+        // 生成动态爱心（原有）
         function createFloatingHearts() {
             const container = document.getElementById('heartContainer');
-            const heartCount = 15;
-            for (let i = 0; i < heartCount; i++) {
+            for (let i = 0; i < 15; i++) {
                 const heart = document.createElement('div');
                 heart.className = 'floating-heart';
                 heart.innerText = '❤️';
@@ -424,20 +458,17 @@
             }
         }
 
-        // 生成爆炸爱心
+        // 生成爆炸爱心（原有）
         function createExplosionHearts(x, y) {
             const container = document.getElementById('explosionContainer');
-            const heartCount = 20;
-            for (let i = 0; i < heartCount; i++) {
+            for (let i = 0; i < 20; i++) {
                 const heart = document.createElement('div');
                 heart.className = 'explosion-heart';
                 heart.innerText = '❤️';
                 const distance = 50 + Math.random() * 150;
                 const angle = Math.random() * Math.PI * 2;
-                const dx = Math.cos(angle) * distance;
-                const dy = Math.sin(angle) * distance;
-                heart.style.setProperty('--x', `${dx}px`);
-                heart.style.setProperty('--y', `${dy}px`);
+                heart.style.setProperty('--x', `${Math.cos(angle) * distance}px`);
+                heart.style.setProperty('--y', `${Math.sin(angle) * distance}px`);
                 heart.style.left = `${x}px`;
                 heart.style.top = `${y}px`;
                 heart.style.animationDelay = `${Math.random() * 0.3}s`;
@@ -446,110 +477,100 @@
             }
         }
 
-        // 核心DOM元素
+        // 原有DOM元素获取（仅新增草莓元素到分层数组）
         const clickPrompt = document.getElementById('clickPrompt');
         const subtitleWrapper = document.getElementById('subtitleWrapper');
         const cakeWrapper = document.getElementById('cakeWrapper');
         const interactionArea = document.getElementById('interactionArea');
         const birthdayMusic = document.getElementById('birthdayMusic');
-        const happyTip = document.getElementById('happyTip');
         const flame = document.getElementById('flame');
-        
-        // 字幕列表
         const subtitles = [
-            { id: 'subtitle1', time: 1500 },
-            { id: 'subtitle2', time: 1500 },
-            { id: 'subtitle3', time: 1500 },
-            { id: 'subtitle4', time: 2000 },
-            { id: 'subtitle5', time: 1500 },
-            { id: 'subtitle6', time: 1500 },
-            { id: 'count3', time: 1000 },
-            { id: 'count2', time: 1000 },
-            { id: 'count1', time: 1000 }
+            { id: 'subtitle1', time: 1500 }, { id: 'subtitle2', time: 1500 },
+            { id: 'subtitle3', time: 1500 }, { id: 'subtitle4', time: 2000 },
+            { id: 'subtitle5', time: 1500 }, { id: 'subtitle6', time: 1500 },
+            { id: 'count3', time: 1000 }, { id: 'count2', time: 1000 }, { id: 'count1', time: 1000 }
         ];
 
-        // 播放字幕
+        // 播放字幕（原有）
         function playSubtitles(index = 0) {
             if (index >= subtitles.length) {
                 subtitleWrapper.style.display = 'none';
-                // 字幕结束后，蛋糕容器滑到屏幕中间
                 setTimeout(() => {
                     cakeWrapper.style.display = 'block';
-                    // 滑到屏幕中间（触发分层掉落）
                     cakeWrapper.style.top = '50%';
                     cakeWrapper.style.transform = 'translate(-50%, -50%)';
-                    
-                    // 播放音乐
-                    try {
-                        birthdayMusic.play();
-                    } catch (err) {
+                    try { birthdayMusic.play(); } catch (err) {
                         alert("请点击页面允许播放音乐~");
                         document.body.addEventListener('click', () => birthdayMusic.play(), { once: true });
                     }
-
-                    // 所有分层掉落完成后（10.2+1.5=11.7s），显示交互区
-                    setTimeout(() => {
-                        document.querySelectorAll('.decor').forEach(el => el.style.display = 'block');
-                        interactionArea.style.display = 'block';
-                    }, 12000); // 预留一点缓冲时间
+                    // 启动蛋糕分层动画（仅新增草莓元素）
+                    startCakeLayersAnimation();
                 }, 1000);
                 return;
             }
-
-            // 隐藏所有字幕
-            document.querySelectorAll('.subtitle').forEach(el => {
-                el.classList.remove('show');
-                el.classList.add('hide');
-            });
-            // 显示当前字幕
-            const currentSub = document.getElementById(subtitles[index].id);
-            currentSub.classList.remove('hide');
-            currentSub.classList.add('show');
-            // 下一个字幕
+            document.querySelectorAll('.subtitle').forEach(el => el.classList.remove('show'));
+            document.getElementById(subtitles[index].id).classList.add('show');
             setTimeout(() => playSubtitles(index + 1), subtitles[index].time);
         }
 
-        // ========== 核心修复：点击提示立即隐藏 ==========
+        // 启动字幕流程（原有）
         function startSubtitleFlow() {
-            // 强制隐藏点击提示（双重保障）
             clickPrompt.style.display = 'none';
-            clickPrompt.style.opacity = 0; // 兜底
-            // 显示字幕容器
             subtitleWrapper.style.display = 'flex';
-            // 开始播放字幕
             playSubtitles(0);
         }
 
-        // 绑定事件
-        function bindButtonEvents() {
-            // 不开心提示
-            document.getElementById('unhappyBtn').onclick = function() {
-                happyTip.style.display = 'block';
-                setTimeout(() => happyTip.style.display = 'none', 3000);
-            };
-            // 非常快乐提示
-            document.getElementById('happyBtn').onclick = function() {
-                birthdayMusic.pause();
-                alert('🎉 生日快乐我的萍宝宝！愿你每天都像今天一样甜～ 🎂');
-            };
-            // 吹灭蜡烛
-            flame.onclick = function() {
-                this.classList.add('hide');
-                const rect = this.getBoundingClientRect();
-                const x = rect.left + rect.width / 2;
-                const y = rect.top + rect.height / 2;
-                createExplosionHearts(x, y);
-                this.onclick = null; // 禁用重复点击
-            };
+        // 蛋糕分层动画（仅新增多颗草莓到播放数组）
+        function startCakeLayersAnimation() {
+            const layers = [
+                document.querySelector('.layer1'),
+                document.querySelector('.layer2'),
+                document.querySelector('.layer3'),
+                document.querySelector('.cream'),
+                document.querySelector('.strawberry'),
+                document.querySelector('.strawberry-2'),
+                document.querySelector('.strawberry-3'),
+                document.querySelector('.candle'),
+                document.querySelector('.flame')
+            ];
+            
+            function playNextLayer(index = 0) {
+                if (index >= layers.length) {
+                    setTimeout(() => {
+                        document.querySelectorAll('.decor').forEach(el => el.style.display = 'block');
+                        interactionArea.style.display = 'block';
+                    }, 500);
+                    return;
+                }
+                const currentLayer = layers[index];
+                currentLayer.style.animationPlayState = 'running';
+                currentLayer.addEventListener('animationend', () => {
+                    playNextLayer(index + 1);
+                }, { once: true });
+            }
+            playNextLayer(0);
         }
 
-        // 页面加载初始化
+        // 交互按钮事件（原有）
+        document.getElementById('unhappyBtn').onclick = () => {
+            document.getElementById('happyTip').style.display = 'block';
+            setTimeout(() => document.getElementById('happyTip').style.display = 'none', 3000);
+        };
+        document.getElementById('happyBtn').onclick = () => {
+            birthdayMusic.pause();
+            alert('🎉 生日快乐我的萍宝宝！愿你每天都像今天一样甜～ 🎂');
+        };
+        flame.onclick = function() {
+            this.classList.add('hide');
+            const rect = this.getBoundingClientRect();
+            createExplosionHearts(rect.left + rect.width/2, rect.top + rect.height/2);
+            this.onclick = null;
+        };
+
+        // 初始化（原有）
         window.onload = function() {
             createFloatingHearts();
-            // 绑定点击事件（确保只触发一次，避免重复绑定）
-            document.body.removeEventListener('click', startSubtitleFlow); // 先移除，避免重复
             document.body.addEventListener('click', startSubtitleFlow, { once: true });
-            bindButtonEvents();
         };
     </script>
 </body>
