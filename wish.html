@@ -551,15 +551,17 @@
             playNextLayer(0);
         }
 
-        // 交互按钮事件（原有）
+        // 交互按钮事件（仅修改happyBtn点击逻辑，其余不变）
         document.getElementById('unhappyBtn').onclick = () => {
             document.getElementById('happyTip').style.display = 'block';
             setTimeout(() => document.getElementById('happyTip').style.display = 'none', 3000);
         };
+        // ========== 核心修改：替换原alert为跳转至第三个界面 ==========
         document.getElementById('happyBtn').onclick = () => {
-            birthdayMusic.pause();
-            alert('🎉 生日快乐我的萍宝宝！愿你每天都像今天一样甜～ 🎂');
+            birthdayMusic.pause(); // 暂停当前页面的背景音乐
+            window.location.href = './zuihoujiemian.html'; // 跳转到第三个界面
         };
+        // ========== 核心修改结束 ==========
         flame.onclick = function() {
             this.classList.add('hide');
             const rect = this.getBoundingClientRect();
