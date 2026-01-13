@@ -498,7 +498,7 @@
                 setTimeout(() => {
                     cakeWrapper.style.display = 'block';
                     cakeWrapper.style.top = '50%';
-                    cakeWrapper.style.transform = 'translate(-50%, calc(-50% - 5px))';
+                    cakeWrapper.style.transform = 'translate(-50%, calc(-50% - 15px))';
                     try { birthdayMusic.play(); } catch (err) {
                         alert("请点击页面允许播放音乐~");
                         document.body.addEventListener('click', () => birthdayMusic.play(), { once: true });
