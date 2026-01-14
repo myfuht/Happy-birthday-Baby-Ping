@@ -428,10 +428,12 @@
     </style>
 </head>
 <body>
-    <!-- 音频元素 -->
-    <audio id="birthdayMusic" preload="auto">
+    <!-- 音频元素：修改文件名 + 增加loop确保循环播放 -->
+    <audio id="birthdayMusic" preload="auto" loop>
         <source src="happybirthday.mp3" type="audio/mpeg">
-    </audio>
+        <!-- 降级提示：若音频无法播放 -->
+        您的浏览器不支持音频播放，请升级浏览器！
+    
 
     <!-- 动态爱心背景容器 -->
     <div id="heartContainer"></div>
@@ -532,16 +534,35 @@
             { id: 'count3', time: 1000 }, { id: 'count2', time: 1000 }, { id: 'count1', time: 1000 }
         ];
 
+        // 强化音乐播放函数：解决浏览器拦截问题
+        function playBackgroundMusic() {
+            // 先加载音频，确保资源就绪
+            birthdayMusic.load();
+            // 多次尝试播放，适配不同浏览器
+            birthdayMusic.play().then(() => {
+                console.log("音乐播放成功");
+            }).catch(err => {
+                console.log("首次播放失败，触发用户交互后重试：", err);
+                // 绑定一次点击事件，用户点击任意位置播放
+                document.body.addEventListener('click', () => {
+                    birthdayMusic.play();
+                }, { once: true });
+            });
+        }
+
         // 播放字幕
         function playSubtitles(index = 0) {
             if (index >= subtitles.length) {
                 subtitleWrapper.style.display = 'none';
                 setTimeout(() => {
                     cakeWrapper.style.display = 'block';
-                    // ========== 核心修改：蛋糕位置改为40% ==========
-                    cakeWrapper.style.top = '40%'; 
+                    // 蛋糕位置保持55%
+                    cakeWrapper.style.top = '55%'; 
                     cakeWrapper.style.transform = 'translate(-50%, -50%)';
-                    // ========== 修改结束 ==========
+                    
+                    // 倒数结束后强制触发音乐播放
+                    playBackgroundMusic();
+                    
                     startCakeLayersAnimation();
                 }, 1000);
                 return;
@@ -551,17 +572,12 @@
             setTimeout(() => playSubtitles(index + 1), subtitles[index].time);
         }
 
-        // 启动字幕流程（提前播放音乐，解决自动播放限制）
+        // 启动字幕流程
         function startSubtitleFlow() {
             clickPrompt.style.display = 'none';
             subtitleWrapper.style.display = 'flex';
-            // 核心修复：用户点击后立即尝试播放音乐
-            try {
-                birthdayMusic.play();
-            } catch (err) {
-                alert("请点击页面允许播放音乐~");
-                document.body.addEventListener('click', () => birthdayMusic.play(), { once: true });
-            }
+            // 提前预加载音乐
+            birthdayMusic.load();
             playSubtitles(0);
         }
 
