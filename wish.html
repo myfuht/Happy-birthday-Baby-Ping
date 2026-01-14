@@ -426,7 +426,7 @@
         }
         @keyframes float { 0%,100% { transform: translateY(0) rotate(0deg); opacity:0.2; } 50% { transform: translateY(-30px) rotate(15deg); opacity:0.5; } }
 
-        /* 新增：兜底结尾内容（跳转失败时显示） */
+        /* 兜底结尾内容（跳转失败时显示） */
         #fallbackContent {
             position: fixed;
             top: 0;
@@ -452,28 +452,12 @@
             line-height: 1.6;
             max-width: 80%;
         }
-
-        /* 新增：手机端声音提示 */
-        #soundTip {
-            position: fixed;
-            bottom: 5%;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #fff;
-            font-size: 16px;
-            z-index: 110;
-            display: none;
-            background: rgba(244, 114, 182, 0.8);
-            padding: 8px 15px;
-            border-radius: 20px;
-        }
     </style>
 </head>
 <body>
-    <!-- 音频元素：新增preload="metadata"适配手机，保留loop -->
-    <audio id="birthdayMusic" preload="metadata" loop>
+    <!-- 音频元素：关键修改！preload="auto" + 移除多余限制 -->
+    <audio id="birthdayMusic" preload="auto" loop>
         <source src="happybirthday.mp3" type="audio/mpeg">
-        <!-- 降级提示：若音频无法播放 -->
         您的浏览器不支持音频播放，请升级浏览器！
     </audio>
 
@@ -484,9 +468,6 @@
 
     <!-- 初始点击提示 -->
     <div id="clickPrompt">点击页面获取祝福 ❤️</div>
-
-    <!-- 新增：手机端声音提示 -->
-    <div id="soundTip">点击任意位置播放声音 🎵</div>
 
     <!-- 字幕容器 -->
     <div id="subtitleWrapper">
@@ -580,7 +561,6 @@
         const birthdayMusic = document.getElementById('birthdayMusic');
         const flame = document.getElementById('flame');
         const fallbackContent = document.getElementById('fallbackContent');
-        const soundTip = document.getElementById('soundTip'); // 新增：声音提示
         const subtitles = [
             { id: 'subtitle1', time: 1500 }, { id: 'subtitle2', time: 1500 },
             { id: 'subtitle3', time: 1500 }, { id: 'subtitle4', time: 2000 },
@@ -588,44 +568,16 @@
             { id: 'count3', time: 1000 }, { id: 'count2', time: 1000 }, { id: 'count1', time: 1000 }
         ];
 
-        // 核心优化：手机端专属的声音播放函数
-        function playBackgroundMusicForMobile() {
-            // 1. 先加载音频（手机端优先加载元数据，减少卡顿）
-            birthdayMusic.load();
-            
-            // 2. 多次尝试播放，适配所有手机浏览器
-            const playAudio = () => {
-                birthdayMusic.play().then(() => {
-                    console.log("手机端音乐播放成功");
-                    soundTip.style.display = 'none'; // 隐藏提示
-                }).catch(err => {
-                    console.log("首次播放失败，显示提示：", err);
-                    soundTip.style.display = 'block'; // 显示点击播放提示
-                    // 绑定任意点击触发播放（手机端必须用户主动点击）
-                    document.body.addEventListener('touchstart', () => {
-                        birthdayMusic.play();
-                        soundTip.style.display = 'none';
-                    }, { once: true });
-                    document.body.addEventListener('click', () => {
-                        birthdayMusic.play();
-                        soundTip.style.display = 'none';
-                    }, { once: true });
-                });
-            };
-
-            // 3. 优先触发播放
-            playAudio();
-
-            // 4. 微信浏览器特殊处理（监听微信内置事件）
-            if (typeof WeixinJSBridge !== 'undefined') {
-                WeixinJSBridge.invoke('getNetworkType', {}, function() {
-                    playAudio();
-                });
-            } else {
-                document.addEventListener("WeixinJSBridgeReady", function() {
-                    playAudio();
-                }, false);
-            }
+        // 核心修改：极简的播放函数（去掉多余检测，抢占交互窗口期）
+        function playBackgroundMusic() {
+            // 用户首次交互后立即播放，不做多余判断（这是手机端自动播放的关键）
+            birthdayMusic.play().catch(err => {
+                // 仅做日志，不干扰播放逻辑
+                console.log("播放兜底触发：", err);
+                // 兜底：再次绑定一次点击/触摸播放
+                document.body.addEventListener('touchstart', () => birthdayMusic.play(), { once: true });
+                document.body.addEventListener('click', () => birthdayMusic.play(), { once: true });
+            });
         }
 
         // 播放字幕
@@ -634,13 +586,8 @@
                 subtitleWrapper.style.display = 'none';
                 setTimeout(() => {
                     cakeWrapper.style.display = 'block';
-                    // 蛋糕位置保持55%
                     cakeWrapper.style.top = '55%'; 
                     cakeWrapper.style.transform = 'translate(-50%, -50%)';
-                    
-                    // 手机端强制触发声音播放
-                    playBackgroundMusicForMobile();
-                    
                     startCakeLayersAnimation();
                 }, 1000);
                 return;
@@ -650,12 +597,12 @@
             setTimeout(() => playSubtitles(index + 1), subtitles[index].time);
         }
 
-        // 启动字幕流程
+        // 启动字幕流程：核心修改！用户一点击就立即播放音乐
         function startSubtitleFlow() {
             clickPrompt.style.display = 'none';
             subtitleWrapper.style.display = 'flex';
-            // 提前预加载音乐（手机端适配）
-            birthdayMusic.load();
+            // 关键：用户首次交互（点击/触摸）的瞬间就播放音乐，而不是等字幕走完
+            playBackgroundMusic();
             playSubtitles(0);
         }
 
@@ -693,30 +640,18 @@
         // 安全跳转函数
         function safeJumpToNextPage() {
             try {
-                // 暂停音乐（增加容错）
                 if (birthdayMusic && !birthdayMusic.paused) {
                     birthdayMusic.pause();
                 }
-
-                // 尝试跳转，设置超时检测
                 const jumpTimeout = setTimeout(() => {
-                    // 跳转超时/失败，显示兜底内容
                     fallbackContent.style.display = 'flex';
                     cakeWrapper.style.display = 'none';
                     interactionArea.style.display = 'none';
                     subtitleWrapper.style.display = 'none';
                 }, 2000);
-
-                // 执行跳转
                 window.location.href = './zuihoujiemian.html';
-
-                // 检测是否跳转成功
-                setTimeout(() => {
-                    clearTimeout(jumpTimeout);
-                }, 100);
-
+                setTimeout(() => clearTimeout(jumpTimeout), 100);
             } catch (err) {
-                // 跳转出错，直接显示兜底内容
                 console.error("跳转失败：", err);
                 fallbackContent.style.display = 'flex';
                 cakeWrapper.style.display = 'none';
@@ -739,10 +674,10 @@
             this.onclick = null;
         };
 
-        // 页面初始化：适配手机端触摸事件
+        // 页面初始化：仅保留基础监听，去掉多余逻辑
         window.onload = function() {
             createFloatingHearts();
-            // 同时监听点击和触摸事件（手机端触摸优先）
+            // 同时监听点击和触摸，用户一操作就触发（和你之前能自动播放的逻辑一致）
             document.body.addEventListener('click', startSubtitleFlow, { once: true });
             document.body.addEventListener('touchstart', startSubtitleFlow, { once: true });
         };
