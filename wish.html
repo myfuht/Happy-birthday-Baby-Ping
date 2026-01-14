@@ -66,17 +66,17 @@
             z-index: 90;
             background: rgba(255, 194, 209, 0.8);
         }
-        /* ========== 核心修改1：调大字幕尺寸 ========== */
+        /* 优化字幕：加粗描边+双层发光阴影 */
         .subtitle {
-            font-size: 50px; /* 原40px → 调大到50px */
+            font-size: 50px;
             font-weight: bold;
             color: #ffffff;
-            -webkit-text-stroke: 1.5px #f472b6; /* 描边加粗，更醒目 */
+            -webkit-text-stroke: 2px #d6408c; 
             letter-spacing: 12px;
             text-align: center;
             opacity: 0;
             white-space: normal;
-            text-shadow: 0 0 25px rgba(244, 114, 182, 0.8);
+            text-shadow: 0 0 10px #d6408c, 0 0 25px #f88fc8;
             transform: translate(-50%, -50%) scale(0.8);
             position: absolute;
             top: 40%;
@@ -84,7 +84,7 @@
             line-height: 1.3;
         }
         .subtitle.two-line { 
-            font-size: 45px; /* 原35px → 调大到45px */
+            font-size: 45px;
             letter-spacing: 10px; 
             padding: 0 20px;
         }
@@ -94,9 +94,12 @@
             animation: subtitleShow 0.6s ease-out forwards, subtitleGlow 1.5s ease-in-out infinite;
         }
         @keyframes subtitleShow { 0% { opacity: 0; scale: 0.8; } 100% { opacity: 1; scale: 1; } }
-        @keyframes subtitleGlow { 0%,100% { text-shadow: 0 0 25px #f472b6; } 50% { text-shadow: 0 0 35px #f472b6; } }
+        @keyframes subtitleGlow { 
+            0%,100% { text-shadow: 0 0 10px #d6408c, 0 0 25px #f88fc8; } 
+            50% { text-shadow: 0 0 15px #d6408c, 0 0 35px #f88fc8; } 
+        }
 
-        /* ========== 蛋糕样式 + 核心修改2：调大蛋糕尺寸 ========== */
+        /* 蛋糕样式：放大+立体装饰 */
         @keyframes fall {
             0% { transform: translateX(-50%) translateY(-100%); opacity: 0; }
             100% { transform: translateX(-50%) translateY(0); opacity: 1; }
@@ -111,18 +114,16 @@
             z-index: 80;
             text-align: center;
             transition: top 1s ease-out, transform 1s ease-out;
-            scale: 1.2; /* 原0.8 → 调大到1.2，整体放大20% */
+            scale: 1.2;
         }
 
-        /* 蛋糕主体：加宽加高 */
         .cake {
             position: relative;
-            width: 280px; /* 原220px → 调大到280px */
-            height: 300px; /* 原240px → 调大到300px */
+            width: 280px;
+            height: 300px;
             margin: 0 auto;
         }
 
-        /* 蛋糕分层：同步加宽 */
         .cake-layer {
             position: absolute;
             left: 50%;
@@ -130,14 +131,14 @@
             animation: fall 1.5s ease-out forwards;
             animation-play-state: paused;
             opacity: 0;
-            border-radius: 15px; /* 圆角加大，更圆润 */
-            box-shadow: 0 8px 12px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 8px 12px rgba(0,0,0,0.1), 0 2px 5px rgba(214, 64, 140, 0.2);
         }
 
-        /* 底层 */
+        /* 蛋糕底层 */
         .layer1 {
-            width: 280px; /* 原220px → 280px */
-            height: 55px; /* 原45px → 55px */
+            width: 280px;
+            height: 55px;
             background: linear-gradient(135deg, #fce7f3, #fbcfe8);
             top: calc(100% - 55px);
             z-index: 1;
@@ -154,10 +155,10 @@
             opacity: 0.8;
         }
 
-        /* 中层 */
+        /* 蛋糕中层 */
         .layer2 {
-            width: 230px; /* 原180px → 230px */
-            height: 55px; /* 原45px → 55px */
+            width: 230px;
+            height: 55px;
             background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
             top: calc(100% - 55px*2 - 10px);
             z-index: 2;
@@ -174,10 +175,10 @@
             opacity: 0.8;
         }
 
-        /* 上层 */
+        /* 蛋糕上层 */
         .layer3 {
-            width: 180px; /* 原140px → 180px */
-            height: 55px; /* 原45px → 55px */
+            width: 180px;
+            height: 55px;
             background: linear-gradient(135deg, #f9a8d4, #f472b6);
             top: calc(100% - 55px*3 - 20px);
             z-index: 3;
@@ -194,12 +195,12 @@
             opacity: 0.8;
         }
 
-        /* 奶油顶：同步放大 */
+        /* 奶油顶：高光+渐变纹理 */
         .cream {
             position: absolute;
-            width: 170px; /* 原130px → 170px */
-            height: 45px; /* 原35px → 45px */
-            background: linear-gradient(135deg, #ffffff, #fef7fb);
+            width: 170px;
+            height: 45px;
+            background: linear-gradient(to bottom, #ffffff 30%, #fef7fb 80%, #fce7f3 100%);
             border-radius: 50% 50% 15px 15px;
             left: 50%;
             transform: translateX(-50%) translateY(-100%);
@@ -222,12 +223,23 @@
             opacity: 0.5;
             pointer-events: none;
         }
+        .cream::before {
+            content: "";
+            position: absolute;
+            top: 5px;
+            left: 15px;
+            width: 60%;
+            height: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            pointer-events: none;
+        }
 
-        /* 草莓装饰：同步放大 */
+        /* 草莓装饰：高光+阴影 */
         .strawberry {
             position: absolute;
-            width: 40px; /* 原30px → 40px */
-            height: 40px; /* 原30px → 40px */
+            width: 40px;
+            height: 40px;
             background: linear-gradient(135deg, #ef4444, #dc2626);
             border-radius: 50% 50% 12px 12px;
             left: 50%;
@@ -237,22 +249,35 @@
             opacity: 0;
             top: calc(100% - 55px*3 - 20px - 45px - 40px);
             z-index: 5;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
         }
         .strawberry::before {
             content: "";
             position: absolute;
             top: -10px;
             left: 12px;
-            width: 12px; /* 原10px → 12px */
-            height: 12px; /* 原10px → 12px */
+            width: 12px;
+            height: 12px;
             background: linear-gradient(135deg, #16a34a, #15803d);
             border-radius: 50% 0 50% 0;
             transform: rotate(45deg);
         }
+        .strawberry::after {
+            content: "";
+            position: absolute;
+            top: 8px;
+            left: 10px;
+            width: 10px;
+            height: 15px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
         .strawberry-2 {
             position: absolute;
-            width: 35px; /* 原25px → 35px */
-            height: 35px; /* 原25px → 35px */
+            width: 35px;
+            height: 35px;
             background: linear-gradient(135deg, #ef4444, #dc2626);
             border-radius: 50% 50% 12px 12px;
             left: 35%;
@@ -262,6 +287,7 @@
             opacity: 0;
             top: calc(100% - 55px*3 - 20px - 45px - 35px);
             z-index: 5;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
         }
         .strawberry-2::before {
             content: "";
@@ -274,10 +300,22 @@
             border-radius: 50% 0 50% 0;
             transform: rotate(45deg);
         }
+        .strawberry-2::after {
+            content: "";
+            position: absolute;
+            top: 6px;
+            left: 8px;
+            width: 8px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
         .strawberry-3 {
             position: absolute;
-            width: 35px; /* 原25px → 35px */
-            height: 35px; /* 原25px → 35px */
+            width: 35px;
+            height: 35px;
             background: linear-gradient(135deg, #ef4444, #dc2626);
             border-radius: 50% 50% 12px 12px;
             left: 65%;
@@ -287,6 +325,7 @@
             opacity: 0;
             top: calc(100% - 55px*3 - 20px - 45px - 35px);
             z-index: 5;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
         }
         .strawberry-3::before {
             content: "";
@@ -299,12 +338,23 @@
             border-radius: 50% 0 50% 0;
             transform: rotate(45deg);
         }
+        .strawberry-3::after {
+            content: "";
+            position: absolute;
+            top: 6px;
+            left: 8px;
+            width: 8px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+        }
 
-        /* 蜡烛：同步放大 */
+        /* 蜡烛：渐变+加粗烛芯 */
         .candle {
-            width: 15px; /* 原12px → 15px */
-            height: 50px; /* 原40px → 50px */
-            background: linear-gradient(90deg, #ffffff, #fef2f2);
+            width: 15px;
+            height: 50px;
+            background: linear-gradient(to bottom, #ffffff 20%, #fef2f2 50%, #fcf0d0 100%);
             left: 50%;
             transform: translateX(-50%) translateY(-100%);
             position: absolute;
@@ -322,22 +372,22 @@
             top: 8px;
             left: 50%;
             transform: translateX(-50%);
-            width: 3px; /* 原2px → 3px */
-            height: 10px; /* 原8px → 10px */
+            width: 4px;
+            height: 12px;
             background: #78350f;
             border-radius: 2px;
         }
 
-        /* 火焰：同步放大 */
+        /* 火焰：增强光晕+渐变 */
         .flame {
-            width: 20px; /* 原15px → 20px */
-            height: 30px; /* 原25px → 30px */
-            background: linear-gradient(180deg, #ff7800, #ffd700, #fff9c4);
+            width: 20px;
+            height: 30px;
+            background: linear-gradient(to top, #ff7800 10%, #ffd700 50%, #fff9c4 100%);
             left: 50%;
             transform: translateX(-50%) translateY(-100%);
             position: absolute;
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            box-shadow: 0 0 30px #ff9900, 0 0 15px rgba(255,153,0,0.5);
+            box-shadow: 0 0 30px #ff7800, 0 0 15px #ffd700, 0 0 5px #fff9c4;
             z-index: 7;
             animation: fall 1.5s ease-out forwards, flame 0.8s infinite alternate;
             animation-play-state: paused;
@@ -359,8 +409,11 @@
 
         /* 爆炸爱心 */
         .explosion-heart {
-            position: absolute; color: #ff4d94; font-size:25px; /* 原20px → 25px */
-            pointer-events: none; z-index:95;
+            position: absolute; 
+            color: #ff4d94; 
+            font-size:25px;
+            pointer-events: none; 
+            z-index:95;
             animation: explosion 1.2s ease-out forwards;
         }
         @keyframes explosion {
@@ -425,7 +478,10 @@
             z-index:60;
             scale: 0.8;
         }
-        @keyframes float { 0%,100% { transform: translateY(0) rotate(0deg); opacity:0.2; } 50% { transform: translateY(-30px) rotate(15deg); opacity:0.5; } }
+        @keyframes float { 
+            0%,100% { transform: translateY(0) rotate(0deg); opacity:0.2; } 
+            50% { transform: translateY(-30px) rotate(15deg); opacity:0.5; } 
+        }
 
         /* 兜底结尾内容 */
         #fallbackContent {
@@ -456,15 +512,20 @@
     </style>
 </head>
 <body>
+    <!-- 音频元素：预加载+循环，确保手机端可播放 -->
     <audio id="birthdayMusic" preload="auto" loop>
         <source src="happybirthday.mp3" type="audio/mpeg">
         您的浏览器不支持音频播放，请升级浏览器！
-    
+    </audio>
 
+    <!-- 动态爱心背景 -->
     <div id="heartContainer"></div>
+    <!-- 爆炸爱心容器 -->
     <div id="explosionContainer"></div>
+    <!-- 初始点击提示 -->
     <div id="clickPrompt">点击页面获取祝福 ❤️</div>
 
+    <!-- 字幕/倒计时容器 -->
     <div id="subtitleWrapper">
         <div class="subtitle" id="subtitle1">Hi宝宝</div>
         <div class="subtitle" id="subtitle2">祝你</div>
@@ -477,6 +538,7 @@
         <div class="subtitle" id="count1">1</div>
     </div>
 
+    <!-- 蛋糕容器 -->
     <div id="cakeWrapper">
         <div class="cake">
             <div class="cake-layer layer1"></div>
@@ -491,6 +553,7 @@
         </div>
     </div>
 
+    <!-- 交互区域 -->
     <div id="interactionArea">
         <div class="question">今天的你快乐吗？</div>
         <div class="btn-group">
@@ -500,18 +563,21 @@
         <div class="tip" id="happyTip">萍宝宝不允许不开心哦~请点击非常快乐</div>
     </div>
 
+    <!-- 兜底结尾内容 -->
     <div id="fallbackContent">
         <h1>生日快乐呀！🥳</h1>
         <p>希望这小小的惊喜能让你开心~</p>
         <p>新的一岁要继续闪闪发光哦！✨</p>
     </div>
 
+    <!-- 装饰元素 -->
     <div class="decor" style="width:16px;height:16px;top:20%;left:15%;animation-delay:0s;"></div>
     <div class="decor" style="width:24px;height:24px;top:10%;right:20%;animation-delay:1s;"></div>
     <div class="decor" style="width:32px;height:32px;bottom:20%;left:25%;animation-delay:2s;"></div>
     <div class="decor" style="width:16px;height:16px;bottom:10%;right:15%;animation-delay:3s;"></div>
 
     <script>
+        // 生成动态飘落爱心
         function createFloatingHearts() {
             const container = document.getElementById('heartContainer');
             for (let i = 0; i < 12; i++) {
@@ -524,6 +590,7 @@
             }
         }
 
+        // 生成爆炸爱心
         function createExplosionHearts(x, y) {
             const container = document.getElementById('explosionContainer');
             for (let i = 0; i < 15; i++) {
@@ -542,6 +609,7 @@
             }
         }
 
+        // 获取DOM元素
         const clickPrompt = document.getElementById('clickPrompt');
         const subtitleWrapper = document.getElementById('subtitleWrapper');
         const cakeWrapper = document.getElementById('cakeWrapper');
@@ -549,51 +617,66 @@
         const birthdayMusic = document.getElementById('birthdayMusic');
         const flame = document.getElementById('flame');
         const fallbackContent = document.getElementById('fallbackContent');
+        
+        // 字幕/倒计时列表（最后三个是3、2、1倒计时）
         const subtitles = [
-            { id: 'subtitle1', time: 1500 }, { id: 'subtitle2', time: 1500 },
-            { id: 'subtitle3', time: 1500 }, { id: 'subtitle4', time: 2000 },
-            { id: 'subtitle5', time: 1500 }, { id: 'subtitle6', time: 1500 },
-            { id: 'count3', time: 1000 }, { id: 'count2', time: 1000 }, { id: 'count1', time: 1000 }
+            { id: 'subtitle1', time: 1500 }, 
+            { id: 'subtitle2', time: 1500 },
+            { id: 'subtitle3', time: 1500 }, 
+            { id: 'subtitle4', time: 2000 },
+            { id: 'subtitle5', time: 1500 }, 
+            { id: 'subtitle6', time: 1500 },
+            { id: 'count3', time: 1000 }, 
+            { id: 'count2', time: 1000 }, 
+            { id: 'count1', time: 1000 }
         ];
 
-        // 音乐播放函数
+        // 音乐播放函数（适配手机端）
         function playBackgroundMusic() {
+            // 手机端必须基于用户交互播放，这里兜底绑定点击/触摸
             birthdayMusic.play().catch(err => {
-                console.log("播放触发，兜底点击播放：", err);
+                console.log("音乐播放触发兜底：", err);
+                // 若自动播放失败，点击/触摸任意位置也能播放
                 document.body.addEventListener('touchstart', () => birthdayMusic.play(), { once: true });
                 document.body.addEventListener('click', () => birthdayMusic.play(), { once: true });
             });
         }
 
-        // ========== 核心修改3：倒计时结束后（字幕走完）播放音乐 ==========
+        // 播放字幕/倒计时（核心：倒计时结束后播放音乐）
         function playSubtitles(index = 0) {
+            // 所有字幕/倒计时播放完毕（3、2、1结束）
             if (index >= subtitles.length) {
                 subtitleWrapper.style.display = 'none';
                 setTimeout(() => {
+                    // 显示蛋糕
                     cakeWrapper.style.display = 'block';
                     cakeWrapper.style.top = '55%'; 
                     cakeWrapper.style.transform = 'translate(-50%, -50%)';
                     
-                    // 关键：倒计时结束、蛋糕出现时，触发音乐播放
+                    // ========== 关键：倒计时结束后才播放音乐 ==========
                     playBackgroundMusic();
                     
+                    // 启动蛋糕分层动画
                     startCakeLayersAnimation();
                 }, 1000);
                 return;
             }
+            // 逐行播放字幕/倒计时
             document.querySelectorAll('.subtitle').forEach(el => el.classList.remove('show'));
             document.getElementById(subtitles[index].id).classList.add('show');
             setTimeout(() => playSubtitles(index + 1), subtitles[index].time);
         }
 
+        // 启动字幕/倒计时流程（用户点击后触发，仅预加载音乐不播放）
         function startSubtitleFlow() {
             clickPrompt.style.display = 'none';
             subtitleWrapper.style.display = 'flex';
-            // 提前预加载音乐，不立即播放
+            // 预加载音乐，不立即播放（等倒计时结束）
             birthdayMusic.load();
             playSubtitles(0);
         }
 
+        // 蛋糕分层动画
         function startCakeLayersAnimation() {
             const layers = [
                 document.querySelector('.layer1'),
@@ -624,18 +707,23 @@
             playNextLayer(0);
         }
 
+        // 安全跳转函数
         function safeJumpToNextPage() {
             try {
+                // 跳转前暂停音乐
                 if (birthdayMusic && !birthdayMusic.paused) {
                     birthdayMusic.pause();
                 }
+                // 超时兜底
                 const jumpTimeout = setTimeout(() => {
                     fallbackContent.style.display = 'flex';
                     cakeWrapper.style.display = 'none';
                     interactionArea.style.display = 'none';
                     subtitleWrapper.style.display = 'none';
                 }, 2000);
+                // 执行跳转
                 window.location.href = './zuihoujiemian.html';
+                // 检测跳转是否成功
                 setTimeout(() => clearTimeout(jumpTimeout), 100);
             } catch (err) {
                 console.error("跳转失败：", err);
@@ -646,12 +734,14 @@
             }
         }
 
+        // 交互按钮事件
         document.getElementById('unhappyBtn').onclick = () => {
             document.getElementById('happyTip').style.display = 'block';
             setTimeout(() => document.getElementById('happyTip').style.display = 'none', 3000);
         };
         document.getElementById('happyBtn').onclick = safeJumpToNextPage;
 
+        // 火焰点击事件
         flame.onclick = function() {
             this.classList.add('hide');
             const rect = this.getBoundingClientRect();
@@ -659,8 +749,10 @@
             this.onclick = null;
         };
 
+        // 页面初始化
         window.onload = function() {
             createFloatingHearts();
+            // 监听点击/触摸事件（手机端适配），用户操作后启动流程
             document.body.addEventListener('click', startSubtitleFlow, { once: true });
             document.body.addEventListener('touchstart', startSubtitleFlow, { once: true });
         };
