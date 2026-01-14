@@ -425,6 +425,33 @@
             scale: 0.8;
         }
         @keyframes float { 0%,100% { transform: translateY(0) rotate(0deg); opacity:0.2; } 50% { transform: translateY(-30px) rotate(15deg); opacity:0.5; } }
+
+        /* 新增：兜底结尾内容（跳转失败时显示） */
+        #fallbackContent {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #ffc2d1;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+        #fallbackContent h1 {
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+        #fallbackContent p {
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 80%;
+        }
     </style>
 </head>
 <body>
@@ -433,7 +460,7 @@
         <source src="happybirthday.mp3" type="audio/mpeg">
         <!-- 降级提示：若音频无法播放 -->
         您的浏览器不支持音频播放，请升级浏览器！
-    
+    </audio>
 
     <!-- 动态爱心背景容器 -->
     <div id="heartContainer"></div>
@@ -479,6 +506,13 @@
             <button class="btn" id="unhappyBtn">不太开心</button>
         </div>
         <div class="tip" id="happyTip">萍宝宝不允许不开心哦~请点击非常快乐</div>
+    </div>
+
+    <!-- 新增：兜底结尾内容 -->
+    <div id="fallbackContent">
+        <h1>生日快乐呀！🥳</h1>
+        <p>希望这小小的惊喜能让你开心~</p>
+        <p>新的一岁要继续闪闪发光哦！✨</p>
     </div>
 
     <!-- 装饰元素 -->
@@ -527,6 +561,7 @@
         const interactionArea = document.getElementById('interactionArea');
         const birthdayMusic = document.getElementById('birthdayMusic');
         const flame = document.getElementById('flame');
+        const fallbackContent = document.getElementById('fallbackContent'); // 新增：兜底内容
         const subtitles = [
             { id: 'subtitle1', time: 1500 }, { id: 'subtitle2', time: 1500 },
             { id: 'subtitle3', time: 1500 }, { id: 'subtitle4', time: 2000 },
@@ -612,15 +647,50 @@
             playNextLayer(0);
         }
 
-        // 交互按钮事件
+        // 新增：安全跳转函数（核心修改）
+        function safeJumpToNextPage() {
+            try {
+                // 1. 先暂停音乐（增加容错：音乐不存在时不报错）
+                if (birthdayMusic && !birthdayMusic.paused) {
+                    birthdayMusic.pause();
+                }
+
+                // 2. 尝试跳转，设置超时检测
+                const jumpTimeout = setTimeout(() => {
+                    // 跳转超时/失败，显示兜底内容
+                    fallbackContent.style.display = 'flex';
+                    // 隐藏其他元素
+                    cakeWrapper.style.display = 'none';
+                    interactionArea.style.display = 'none';
+                    subtitleWrapper.style.display = 'none';
+                }, 2000); // 2秒没跳转成功就触发兜底
+
+                // 3. 执行跳转
+                window.location.href = './zuihoujiemian.html';
+
+                // 4. 检测是否跳转成功（如果还在当前页，清除超时）
+                setTimeout(() => {
+                    clearTimeout(jumpTimeout);
+                }, 100);
+
+            } catch (err) {
+                // 跳转出错，直接显示兜底内容
+                console.error("跳转失败：", err);
+                fallbackContent.style.display = 'flex';
+                cakeWrapper.style.display = 'none';
+                interactionArea.style.display = 'none';
+                subtitleWrapper.style.display = 'none';
+            }
+        }
+
+        // 交互按钮事件（修改跳转逻辑）
         document.getElementById('unhappyBtn').onclick = () => {
             document.getElementById('happyTip').style.display = 'block';
             setTimeout(() => document.getElementById('happyTip').style.display = 'none', 3000);
         };
-        document.getElementById('happyBtn').onclick = () => {
-            birthdayMusic.pause();
-            window.location.href = './zuihoujiemian.html';
-        };
+        // 修改：使用安全跳转函数
+        document.getElementById('happyBtn').onclick = safeJumpToNextPage;
+
         flame.onclick = function() {
             this.classList.add('hide');
             const rect = this.getBoundingClientRect();
