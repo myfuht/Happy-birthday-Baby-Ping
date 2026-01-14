@@ -17,8 +17,6 @@
             min-height: 100vh;
             position: relative;
             overflow: hidden;
-            /* 防止手机端滚动 */
-            overflow-y: hidden;
         }
 
         /* 动态飘落爱心 */
@@ -26,7 +24,7 @@
             position: absolute;
             color: #f472b6;
             opacity: 0.5;
-            font-size: 16px; /* 手机端缩小爱心尺寸 */
+            font-size: 16px;
             animation: float-down 8s linear infinite;
             pointer-events: none;
         }
@@ -38,10 +36,10 @@
         }
 
         #clickPrompt {
-            font-size: 30px; /* 手机端缩小提示文字 */
+            font-size: 30px;
             color: #fff;
             font-weight: bold;
-            letter-spacing: 8px; /* 手机端减少字间距 */
+            letter-spacing: 8px;
             text-align: center;
             z-index: 100;
             animation: pulse 2s infinite;
@@ -69,25 +67,25 @@
             background: rgba(255, 194, 209, 0.8);
         }
         .subtitle {
-            font-size: 40px; /* 手机端大幅缩小字幕 */
+            font-size: 40px;
             font-weight: bold;
             color: #ffffff;
-            -webkit-text-stroke: 1px #f472b6; /* 手机端减细描边 */
-            letter-spacing: 10px; /* 手机端减少字间距 */
+            -webkit-text-stroke: 1px #f472b6;
+            letter-spacing: 10px;
             text-align: center;
             opacity: 0;
             white-space: normal;
             text-shadow: 0 0 20px rgba(244, 114, 182, 0.8);
             transform: translate(-50%, -50%) scale(0.8);
             position: absolute;
-            top: 50%;
+            top: 40%; /* 字幕上移到屏幕40%位置，避开蛋糕 */
             left: 50%;
             line-height: 1.2;
         }
         .subtitle.two-line { 
-            font-size: 35px; /* 两行字幕再缩小 */
+            font-size: 35px;
             letter-spacing: 8px; 
-            padding: 0 20px; /* 防止手机端文字溢出 */
+            padding: 0 20px;
         }
         .subtitle.show {
             opacity: 1;
@@ -97,7 +95,7 @@
         @keyframes subtitleShow { 0% { opacity: 0; scale: 0.8; } 100% { opacity: 1; scale: 1; } }
         @keyframes subtitleGlow { 0%,100% { text-shadow: 0 0 20px #f472b6; } 50% { text-shadow: 0 0 30px #f472b6; } }
 
-        /* ========== 蛋糕样式（手机端适配） ========== */
+        /* ========== 蛋糕样式（上移调整） ========== */
         @keyframes fall {
             0% { transform: translateX(-50%) translateY(-100%); opacity: 0; }
             100% { transform: translateX(-50%) translateY(0); opacity: 1; }
@@ -112,20 +110,18 @@
             z-index: 80;
             text-align: center;
             transition: top 1s ease-out, transform 1s ease-out;
-            /* 手机端缩小蛋糕容器整体尺寸 */
-            transform-origin: center bottom;
-            scale: 0.8; /* 蛋糕整体缩小80%，适配手机屏 */
+            scale: 0.8;
         }
 
-        /* 蛋糕主体（手机端缩小） */
+        /* 蛋糕主体 */
         .cake {
             position: relative;
-            width: 220px; /* 原260px，缩小 */
-            height: 240px; /* 原280px，缩小 */
+            width: 220px;
+            height: 240px;
             margin: 0 auto;
         }
 
-        /* 蛋糕分层（同步缩小） */
+        /* 蛋糕分层 */
         .cake-layer {
             position: absolute;
             left: 50%;
@@ -137,10 +133,10 @@
             box-shadow: 0 6px 10px rgba(0,0,0,0.1);
         }
 
-        /* 底层（缩小） */
+        /* 底层 */
         .layer1 {
-            width: 220px; /* 原260px */
-            height: 45px; /* 原50px */
+            width: 220px;
+            height: 45px;
             background: linear-gradient(135deg, #fce7f3, #fbcfe8);
             top: calc(100% - 45px);
             z-index: 1;
@@ -157,10 +153,10 @@
             opacity: 0.8;
         }
 
-        /* 中层（缩小） */
+        /* 中层 */
         .layer2 {
-            width: 180px; /* 原220px */
-            height: 45px; /* 原50px */
+            width: 180px;
+            height: 45px;
             background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
             top: calc(100% - 45px*2 - 8px);
             z-index: 2;
@@ -177,10 +173,10 @@
             opacity: 0.8;
         }
 
-        /* 上层（缩小） */
+        /* 上层 */
         .layer3 {
-            width: 140px; /* 原180px */
-            height: 45px; /* 原50px */
+            width: 140px;
+            height: 45px;
             background: linear-gradient(135deg, #f9a8d4, #f472b6);
             top: calc(100% - 45px*3 - 16px);
             z-index: 3;
@@ -197,11 +193,11 @@
             opacity: 0.8;
         }
 
-        /* 奶油顶（缩小） */
+        /* 奶油顶 */
         .cream {
             position: absolute;
-            width: 130px; /* 原160px */
-            height: 35px; /* 原40px */
+            width: 130px;
+            height: 35px;
             background: linear-gradient(135deg, #ffffff, #fef7fb);
             border-radius: 50% 50% 12px 12px;
             left: 50%;
@@ -226,11 +222,11 @@
             pointer-events: none;
         }
 
-        /* 草莓装饰（缩小） */
+        /* 草莓装饰 */
         .strawberry {
             position: absolute;
-            width: 30px; /* 原35px */
-            height: 30px; /* 原35px */
+            width: 30px;
+            height: 30px;
             background: linear-gradient(135deg, #ef4444, #dc2626);
             border-radius: 50% 50% 10px 10px;
             left: 50%;
@@ -246,16 +242,16 @@
             position: absolute;
             top: -8px;
             left: 10px;
-            width: 10px; /* 原12px */
-            height: 10px; /* 原12px */
+            width: 10px;
+            height: 10px;
             background: linear-gradient(135deg, #16a34a, #15803d);
             border-radius: 50% 0 50% 0;
             transform: rotate(45deg);
         }
         .strawberry-2 {
             position: absolute;
-            width: 25px; /* 原30px */
-            height: 25px; /* 原30px */
+            width: 25px;
+            height: 25px;
             background: linear-gradient(135deg, #ef4444, #dc2626);
             border-radius: 50% 50% 10px 10px;
             left: 35%;
@@ -271,16 +267,16 @@
             position: absolute;
             top: -6px;
             left: 8px;
-            width: 8px; /* 原10px */
-            height: 8px; /* 原10px */
+            width: 8px;
+            height: 8px;
             background: linear-gradient(135deg, #16a34a, #15803d);
             border-radius: 50% 0 50% 0;
             transform: rotate(45deg);
         }
         .strawberry-3 {
             position: absolute;
-            width: 25px; /* 原30px */
-            height: 25px; /* 原30px */
+            width: 25px;
+            height: 25px;
             background: linear-gradient(135deg, #ef4444, #dc2626);
             border-radius: 50% 50% 10px 10px;
             left: 65%;
@@ -296,17 +292,17 @@
             position: absolute;
             top: -6px;
             left: 8px;
-            width: 8px; /* 原10px */
-            height: 8px; /* 原10px */
+            width: 8px;
+            height: 8px;
             background: linear-gradient(135deg, #16a34a, #15803d);
             border-radius: 50% 0 50% 0;
             transform: rotate(45deg);
         }
 
-        /* 蜡烛（缩小） */
+        /* 蜡烛 */
         .candle {
-            width: 12px; /* 原14px */
-            height: 40px; /* 原45px */
+            width: 12px;
+            height: 40px;
             background: linear-gradient(90deg, #ffffff, #fef2f2);
             left: 50%;
             transform: translateX(-50%) translateY(-100%);
@@ -331,10 +327,10 @@
             border-radius: 1px;
         }
 
-        /* 火焰（缩小） */
+        /* 火焰 */
         .flame {
-            width: 15px; /* 原18px */
-            height: 25px; /* 原30px */
+            width: 15px;
+            height: 25px;
             background: linear-gradient(180deg, #ff7800, #ffd700, #fff9c4);
             left: 50%;
             transform: translateX(-50%) translateY(-100%);
@@ -360,9 +356,9 @@
             100% { opacity: 0; transform: translateX(-50%) scale(0.5); }
         }
 
-        /* 爆炸爱心（手机端缩小） */
+        /* 爆炸爱心 */
         .explosion-heart {
-            position: absolute; color: #ff4d94; font-size:20px; /* 原25px */
+            position: absolute; color: #ff4d94; font-size:20px;
             pointer-events: none; z-index:95;
             animation: explosion 1.2s ease-out forwards;
         }
@@ -371,39 +367,37 @@
             100% { opacity:0; transform: translate(var(--x), var(--y)) rotate(360deg) scale(0.5); }
         }
 
-        /* 交互区域（手机端调整位置，避开蛋糕） */
+        /* 交互区域（上移调整） */
         #interactionArea {
             position: fixed; 
-            bottom: 5%; /* 原10%，更靠下 */
+            bottom: 15%; /* 上移到15%位置，避开蛋糕 */
             left: 50%; 
             transform: translateX(-50%);
             display: none; 
             z-index:70; 
             text-align: center; 
             width:90%;
-            /* 确保在蛋糕上方显示，不重叠 */
-            margin-bottom: 10px;
         }
         .question { 
-            font-size:22px; /* 原30px，缩小 */
+            font-size:22px;
             color:#fff; 
             margin-bottom:15px; 
             letter-spacing:2px; 
         }
         .btn-group { 
             display:flex; 
-            gap:15px; /* 原30px，缩小间距 */
+            gap:15px;
             justify-content:center; 
             margin-bottom:10px;
-            flex-wrap: wrap; /* 手机端按钮换行 */
+            flex-wrap: wrap;
         }
         .btn {
-            padding:12px 30px; /* 原15px 40px，缩小 */
+            padding:12px 30px;
             border:2px solid #fff; 
             border-radius:30px;
             background: rgba(255,255,255,0.1); 
             color:#fff; 
-            font-size:18px; /* 原20px，缩小 */
+            font-size:18px;
             cursor: pointer; 
             transition: all 0.3s ease;
         }
@@ -415,12 +409,12 @@
         }
         .tip { 
             color:#fff; 
-            font-size:16px; /* 原18px，缩小 */
+            font-size:16px;
             display:none; 
             margin-top:10px; 
         }
 
-        /* 装饰元素（手机端缩小） */
+        /* 装饰元素 */
         .decor {
             position: absolute; 
             background: rgba(255,255,255,0.25); 
@@ -428,7 +422,6 @@
             animation: float 8s infinite ease-in-out; 
             display:none; 
             z-index:60;
-            /* 缩小装饰元素 */
             scale: 0.8;
         }
         @keyframes float { 0%,100% { transform: translateY(0) rotate(0deg); opacity:0.2; } 50% { transform: translateY(-30px) rotate(15deg); opacity:0.5; } }
@@ -438,7 +431,7 @@
     <!-- 音频元素 -->
     <audio id="birthdayMusic" preload="auto">
         <source src="jimo.mp3" type="audio/mpeg">
-    </audio>
+    
 
     <!-- 动态爱心背景容器 -->
     <div id="heartContainer"></div>
@@ -496,7 +489,7 @@
         // 生成动态爱心
         function createFloatingHearts() {
             const container = document.getElementById('heartContainer');
-            for (let i = 0; i < 12; i++) { // 减少爱心数量，适配手机端
+            for (let i = 0; i < 12; i++) {
                 const heart = document.createElement('div');
                 heart.className = 'floating-heart';
                 heart.innerText = '❤️';
@@ -509,11 +502,11 @@
         // 生成爆炸爱心
         function createExplosionHearts(x, y) {
             const container = document.getElementById('explosionContainer');
-            for (let i = 0; i < 15; i++) { // 减少爆炸爱心数量
+            for (let i = 0; i < 15; i++) {
                 const heart = document.createElement('div');
                 heart.className = 'explosion-heart';
                 heart.innerText = '❤️';
-                const distance = 40 + Math.random() * 120; // 缩小爆炸范围
+                const distance = 40 + Math.random() * 120;
                 const angle = Math.random() * Math.PI * 2;
                 heart.style.setProperty('--x', `${Math.cos(angle) * distance}px`);
                 heart.style.setProperty('--y', `${Math.sin(angle) * distance}px`);
@@ -543,22 +536,14 @@
         function playSubtitles(index = 0) {
             if (index >= subtitles.length) {
                 subtitleWrapper.style.display = 'none';
-                // 核心修改1：延长延迟到1500ms，确保字幕完全隐藏后再显示蛋糕
                 setTimeout(() => {
                     cakeWrapper.style.display = 'block';
-                    // 核心修改2：蛋糕位置设为85%，手机端显示在屏幕最下方
-                    cakeWrapper.style.top = '85%';
-                    cakeWrapper.style.transform = 'translate(-50%, -100%)'; // 底部对齐，不再居中
-                    // 播放背景音乐
-                    try { 
-                        birthdayMusic.play(); 
-                    } catch (err) {
-                        alert("请点击页面允许播放音乐~");
-                        document.body.addEventListener('click', () => birthdayMusic.play(), { once: true });
-                    }
+                    // 核心调整：蛋糕上移到70%位置，居中显示
+                    cakeWrapper.style.top = '70%';
+                    cakeWrapper.style.transform = 'translate(-50%, -50%)';
                     // 启动蛋糕动画
                     startCakeLayersAnimation();
-                }, 1500); // 原1000ms → 1500ms
+                }, 1000);
                 return;
             }
             document.querySelectorAll('.subtitle').forEach(el => el.classList.remove('show'));
@@ -566,10 +551,17 @@
             setTimeout(() => playSubtitles(index + 1), subtitles[index].time);
         }
 
-        // 启动字幕流程
+        // 启动字幕流程（提前播放音乐，解决自动播放限制）
         function startSubtitleFlow() {
             clickPrompt.style.display = 'none';
             subtitleWrapper.style.display = 'flex';
+            // 核心修复：用户点击后立即尝试播放音乐
+            try {
+                birthdayMusic.play();
+            } catch (err) {
+                alert("请点击页面允许播放音乐~");
+                document.body.addEventListener('click', () => birthdayMusic.play(), { once: true });
+            }
             playSubtitles(0);
         }
 
