@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>给萍萍的专属惊喜 ❤️</title>
     <style>
         * {
@@ -17,6 +17,8 @@
             min-height: 100vh;
             position: relative;
             overflow: hidden;
+            /* 防止手机端滚动 */
+            overflow-y: hidden;
         }
 
         /* 动态飘落爱心 */
@@ -24,7 +26,7 @@
             position: absolute;
             color: #f472b6;
             opacity: 0.5;
-            font-size: 20px;
+            font-size: 16px; /* 手机端缩小爱心尺寸 */
             animation: float-down 8s linear infinite;
             pointer-events: none;
         }
@@ -36,10 +38,10 @@
         }
 
         #clickPrompt {
-            font-size: 45px;
+            font-size: 30px; /* 手机端缩小提示文字 */
             color: #fff;
             font-weight: bold;
-            letter-spacing: 12px;
+            letter-spacing: 8px; /* 手机端减少字间距 */
             text-align: center;
             z-index: 100;
             animation: pulse 2s infinite;
@@ -67,11 +69,11 @@
             background: rgba(255, 194, 209, 0.8);
         }
         .subtitle {
-            font-size: 70px;
+            font-size: 40px; /* 手机端大幅缩小字幕 */
             font-weight: bold;
             color: #ffffff;
-            -webkit-text-stroke: 1.5px #f472b6;
-            letter-spacing: 20px;
+            -webkit-text-stroke: 1px #f472b6; /* 手机端减细描边 */
+            letter-spacing: 10px; /* 手机端减少字间距 */
             text-align: center;
             opacity: 0;
             white-space: normal;
@@ -82,7 +84,11 @@
             left: 50%;
             line-height: 1.2;
         }
-        .subtitle.two-line { font-size: 60px; letter-spacing: 15px; }
+        .subtitle.two-line { 
+            font-size: 35px; /* 两行字幕再缩小 */
+            letter-spacing: 8px; 
+            padding: 0 20px; /* 防止手机端文字溢出 */
+        }
         .subtitle.show {
             opacity: 1;
             transform: translate(-50%, -50%) scale(1);
@@ -91,7 +97,7 @@
         @keyframes subtitleShow { 0% { opacity: 0; scale: 0.8; } 100% { opacity: 1; scale: 1; } }
         @keyframes subtitleGlow { 0%,100% { text-shadow: 0 0 20px #f472b6; } 50% { text-shadow: 0 0 30px #f472b6; } }
 
-        /* ========== 蛋糕样式 ========== */
+        /* ========== 蛋糕样式（手机端适配） ========== */
         @keyframes fall {
             0% { transform: translateX(-50%) translateY(-100%); opacity: 0; }
             100% { transform: translateX(-50%) translateY(0); opacity: 1; }
@@ -106,17 +112,20 @@
             z-index: 80;
             text-align: center;
             transition: top 1s ease-out, transform 1s ease-out;
+            /* 手机端缩小蛋糕容器整体尺寸 */
+            transform-origin: center bottom;
+            scale: 0.8; /* 蛋糕整体缩小80%，适配手机屏 */
         }
 
-        /* 蛋糕主体 */
+        /* 蛋糕主体（手机端缩小） */
         .cake {
             position: relative;
-            width: 260px;
-            height: 280px;
+            width: 220px; /* 原260px，缩小 */
+            height: 240px; /* 原280px，缩小 */
             margin: 0 auto;
         }
 
-        /* 蛋糕分层 */
+        /* 蛋糕分层（同步缩小） */
         .cake-layer {
             position: absolute;
             left: 50%;
@@ -128,12 +137,12 @@
             box-shadow: 0 6px 10px rgba(0,0,0,0.1);
         }
 
-        /* 底层 */
+        /* 底层（缩小） */
         .layer1 {
-            width: 260px;
-            height: 50px;
+            width: 220px; /* 原260px */
+            height: 45px; /* 原50px */
             background: linear-gradient(135deg, #fce7f3, #fbcfe8);
-            top: calc(100% - 50px);
+            top: calc(100% - 45px);
             z-index: 1;
         }
         .layer1::after {
@@ -148,12 +157,12 @@
             opacity: 0.8;
         }
 
-        /* 中层 */
+        /* 中层（缩小） */
         .layer2 {
-            width: 220px;
-            height: 50px;
+            width: 180px; /* 原220px */
+            height: 45px; /* 原50px */
             background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
-            top: calc(100% - 50px*2 - 8px);
+            top: calc(100% - 45px*2 - 8px);
             z-index: 2;
         }
         .layer2::after {
@@ -168,12 +177,12 @@
             opacity: 0.8;
         }
 
-        /* 上层 */
+        /* 上层（缩小） */
         .layer3 {
-            width: 180px;
-            height: 50px;
+            width: 140px; /* 原180px */
+            height: 45px; /* 原50px */
             background: linear-gradient(135deg, #f9a8d4, #f472b6);
-            top: calc(100% - 50px*3 - 16px);
+            top: calc(100% - 45px*3 - 16px);
             z-index: 3;
         }
         .layer3::after {
@@ -188,11 +197,11 @@
             opacity: 0.8;
         }
 
-        /* 奶油顶 */
+        /* 奶油顶（缩小） */
         .cream {
             position: absolute;
-            width: 160px;
-            height: 40px;
+            width: 130px; /* 原160px */
+            height: 35px; /* 原40px */
             background: linear-gradient(135deg, #ffffff, #fef7fb);
             border-radius: 50% 50% 12px 12px;
             left: 50%;
@@ -200,7 +209,7 @@
             animation: fall 1.5s ease-out forwards;
             animation-play-state: paused;
             opacity: 0;
-            top: calc(100% - 50px*3 - 16px - 40px);
+            top: calc(100% - 45px*3 - 16px - 35px);
             z-index: 4;
             box-shadow: 0 4px 8px rgba(0,0,0,0.08);
         }
@@ -217,11 +226,11 @@
             pointer-events: none;
         }
 
-        /* 草莓装饰 */
+        /* 草莓装饰（缩小） */
         .strawberry {
             position: absolute;
-            width: 35px;
-            height: 35px;
+            width: 30px; /* 原35px */
+            height: 30px; /* 原35px */
             background: linear-gradient(135deg, #ef4444, #dc2626);
             border-radius: 50% 50% 10px 10px;
             left: 50%;
@@ -229,7 +238,7 @@
             animation: fall 1.5s ease-out forwards;
             animation-play-state: paused;
             opacity: 0;
-            top: calc(100% - 50px*3 - 16px - 40px - 35px);
+            top: calc(100% - 45px*3 - 16px - 35px - 30px);
             z-index: 5;
         }
         .strawberry::before {
@@ -237,16 +246,16 @@
             position: absolute;
             top: -8px;
             left: 10px;
-            width: 12px;
-            height: 12px;
+            width: 10px; /* 原12px */
+            height: 10px; /* 原12px */
             background: linear-gradient(135deg, #16a34a, #15803d);
             border-radius: 50% 0 50% 0;
             transform: rotate(45deg);
         }
         .strawberry-2 {
             position: absolute;
-            width: 30px;
-            height: 30px;
+            width: 25px; /* 原30px */
+            height: 25px; /* 原30px */
             background: linear-gradient(135deg, #ef4444, #dc2626);
             border-radius: 50% 50% 10px 10px;
             left: 35%;
@@ -254,7 +263,7 @@
             animation: fall 1.5s ease-out forwards;
             animation-play-state: paused;
             opacity: 0;
-            top: calc(100% - 50px*3 - 16px - 40px - 30px);
+            top: calc(100% - 45px*3 - 16px - 35px - 25px);
             z-index: 5;
         }
         .strawberry-2::before {
@@ -262,16 +271,16 @@
             position: absolute;
             top: -6px;
             left: 8px;
-            width: 10px;
-            height: 10px;
+            width: 8px; /* 原10px */
+            height: 8px; /* 原10px */
             background: linear-gradient(135deg, #16a34a, #15803d);
             border-radius: 50% 0 50% 0;
             transform: rotate(45deg);
         }
         .strawberry-3 {
             position: absolute;
-            width: 30px;
-            height: 30px;
+            width: 25px; /* 原30px */
+            height: 25px; /* 原30px */
             background: linear-gradient(135deg, #ef4444, #dc2626);
             border-radius: 50% 50% 10px 10px;
             left: 65%;
@@ -279,7 +288,7 @@
             animation: fall 1.5s ease-out forwards;
             animation-play-state: paused;
             opacity: 0;
-            top: calc(100% - 50px*3 - 16px - 40px - 30px);
+            top: calc(100% - 45px*3 - 16px - 35px - 25px);
             z-index: 5;
         }
         .strawberry-3::before {
@@ -287,17 +296,17 @@
             position: absolute;
             top: -6px;
             left: 8px;
-            width: 10px;
-            height: 10px;
+            width: 8px; /* 原10px */
+            height: 8px; /* 原10px */
             background: linear-gradient(135deg, #16a34a, #15803d);
             border-radius: 50% 0 50% 0;
             transform: rotate(45deg);
         }
 
-        /* 蜡烛 */
+        /* 蜡烛（缩小） */
         .candle {
-            width: 14px;
-            height: 45px;
+            width: 12px; /* 原14px */
+            height: 40px; /* 原45px */
             background: linear-gradient(90deg, #ffffff, #fef2f2);
             left: 50%;
             transform: translateX(-50%) translateY(-100%);
@@ -307,7 +316,7 @@
             animation: fall 1.5s ease-out forwards;
             animation-play-state: paused;
             opacity: 0;
-            top: calc(100% - 50px*3 - 16px - 40px - 35px - 45px);
+            top: calc(100% - 45px*3 - 16px - 35px - 30px - 40px);
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
         .candle::after {
@@ -322,10 +331,10 @@
             border-radius: 1px;
         }
 
-        /* 火焰 */
+        /* 火焰（缩小） */
         .flame {
-            width: 18px;
-            height: 30px;
+            width: 15px; /* 原18px */
+            height: 25px; /* 原30px */
             background: linear-gradient(180deg, #ff7800, #ffd700, #fff9c4);
             left: 50%;
             transform: translateX(-50%) translateY(-100%);
@@ -336,7 +345,7 @@
             animation: fall 1.5s ease-out forwards, flame 0.8s infinite alternate;
             animation-play-state: paused;
             opacity: 0;
-            top: calc(100% - 50px*3 - 16px - 40px - 35px - 45px - 30px);
+            top: calc(100% - 45px*3 - 16px - 35px - 30px - 40px - 25px);
             cursor: pointer;
         }
         @keyframes flame {
@@ -351,9 +360,9 @@
             100% { opacity: 0; transform: translateX(-50%) scale(0.5); }
         }
 
-        /* 爆炸爱心 */
+        /* 爆炸爱心（手机端缩小） */
         .explosion-heart {
-            position: absolute; color: #ff4d94; font-size:25px;
+            position: absolute; color: #ff4d94; font-size:20px; /* 原25px */
             pointer-events: none; z-index:95;
             animation: explosion 1.2s ease-out forwards;
         }
@@ -362,25 +371,65 @@
             100% { opacity:0; transform: translate(var(--x), var(--y)) rotate(360deg) scale(0.5); }
         }
 
-        /* 交互区域 */
+        /* 交互区域（手机端调整位置，避开蛋糕） */
         #interactionArea {
-            position: fixed; bottom:10%; left:50%; transform: translateX(-50%);
-            display: none; z-index:70; text-align: center; width:90%;
+            position: fixed; 
+            bottom: 5%; /* 原10%，更靠下 */
+            left: 50%; 
+            transform: translateX(-50%);
+            display: none; 
+            z-index:70; 
+            text-align: center; 
+            width:90%;
+            /* 确保在蛋糕上方显示，不重叠 */
+            margin-bottom: 10px;
         }
-        .question { font-size:30px; color:#fff; margin-bottom:20px; letter-spacing:3px; }
-        .btn-group { display:flex; gap:30px; justify-content:center; margin-bottom:10px; }
+        .question { 
+            font-size:22px; /* 原30px，缩小 */
+            color:#fff; 
+            margin-bottom:15px; 
+            letter-spacing:2px; 
+        }
+        .btn-group { 
+            display:flex; 
+            gap:15px; /* 原30px，缩小间距 */
+            justify-content:center; 
+            margin-bottom:10px;
+            flex-wrap: wrap; /* 手机端按钮换行 */
+        }
         .btn {
-            padding:15px 40px; border:2px solid #fff; border-radius:30px;
-            background: rgba(255,255,255,0.1); color:#fff; font-size:20px;
-            cursor: pointer; transition: all 0.3s ease;
+            padding:12px 30px; /* 原15px 40px，缩小 */
+            border:2px solid #fff; 
+            border-radius:30px;
+            background: rgba(255,255,255,0.1); 
+            color:#fff; 
+            font-size:18px; /* 原20px，缩小 */
+            cursor: pointer; 
+            transition: all 0.3s ease;
         }
-        .btn:hover { background:#fff; color:#f472b6; transform: translateY(-3px); box-shadow:0 6px 15px rgba(244,114,182,0.2); }
-        .tip { color:#fff; font-size:18px; display:none; margin-top:10px; }
+        .btn:hover { 
+            background:#fff; 
+            color:#f472b6; 
+            transform: translateY(-3px); 
+            box-shadow:0 6px 15px rgba(244,114,182,0.2); 
+        }
+        .tip { 
+            color:#fff; 
+            font-size:16px; /* 原18px，缩小 */
+            display:none; 
+            margin-top:10px; 
+        }
 
-        /* 装饰元素 */
+        /* 装饰元素（手机端缩小） */
         .decor {
-            position: absolute; background: rgba(255,255,255,0.25); border-radius:12px;
-            animation: float 8s infinite ease-in-out; display:none; z-index:60;
+            position: absolute; 
+            background: rgba(255,255,255,0.25); 
+            border-radius:12px;
+            animation: float 8s infinite ease-in-out; 
+            display:none; 
+            z-index:60;
+            /* 缩小装饰元素 */
+            scale: 0.8;
         }
         @keyframes float { 0%,100% { transform: translateY(0) rotate(0deg); opacity:0.2; } 50% { transform: translateY(-30px) rotate(15deg); opacity:0.5; } }
     </style>
@@ -438,16 +487,16 @@
     </div>
 
     <!-- 装饰元素 -->
-    <div class="decor" style="width:20px;height:20px;top:20%;left:15%;animation-delay:0s;"></div>
-    <div class="decor" style="width:30px;height:30px;top:10%;right:20%;animation-delay:1s;"></div>
-    <div class="decor" style="width:40px;height:40px;bottom:20%;left:25%;animation-delay:2s;"></div>
-    <div class="decor" style="width:20px;height:20px;bottom:10%;right:15%;animation-delay:3s;"></div>
+    <div class="decor" style="width:16px;height:16px;top:20%;left:15%;animation-delay:0s;"></div>
+    <div class="decor" style="width:24px;height:24px;top:10%;right:20%;animation-delay:1s;"></div>
+    <div class="decor" style="width:32px;height:32px;bottom:20%;left:25%;animation-delay:2s;"></div>
+    <div class="decor" style="width:16px;height:16px;bottom:10%;right:15%;animation-delay:3s;"></div>
 
     <script>
         // 生成动态爱心
         function createFloatingHearts() {
             const container = document.getElementById('heartContainer');
-            for (let i = 0; i < 15; i++) {
+            for (let i = 0; i < 12; i++) { // 减少爱心数量，适配手机端
                 const heart = document.createElement('div');
                 heart.className = 'floating-heart';
                 heart.innerText = '❤️';
@@ -460,11 +509,11 @@
         // 生成爆炸爱心
         function createExplosionHearts(x, y) {
             const container = document.getElementById('explosionContainer');
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 15; i++) { // 减少爆炸爱心数量
                 const heart = document.createElement('div');
                 heart.className = 'explosion-heart';
                 heart.innerText = '❤️';
-                const distance = 50 + Math.random() * 150;
+                const distance = 40 + Math.random() * 120; // 缩小爆炸范围
                 const angle = Math.random() * Math.PI * 2;
                 heart.style.setProperty('--x', `${Math.cos(angle) * distance}px`);
                 heart.style.setProperty('--y', `${Math.sin(angle) * distance}px`);
@@ -494,11 +543,12 @@
         function playSubtitles(index = 0) {
             if (index >= subtitles.length) {
                 subtitleWrapper.style.display = 'none';
+                // 核心修改1：延长延迟到1500ms，确保字幕完全隐藏后再显示蛋糕
                 setTimeout(() => {
                     cakeWrapper.style.display = 'block';
-                    // 核心调整：蛋糕位置更靠下，远离字幕区域（手机端不遮挡）
-                    cakeWrapper.style.top = '65%';
-                    cakeWrapper.style.transform = 'translate(-50%, -50%)';
+                    // 核心修改2：蛋糕位置设为85%，手机端显示在屏幕最下方
+                    cakeWrapper.style.top = '85%';
+                    cakeWrapper.style.transform = 'translate(-50%, -100%)'; // 底部对齐，不再居中
                     // 播放背景音乐
                     try { 
                         birthdayMusic.play(); 
@@ -508,7 +558,7 @@
                     }
                     // 启动蛋糕动画
                     startCakeLayersAnimation();
-                }, 1000);
+                }, 1500); // 原1000ms → 1500ms
                 return;
             }
             document.querySelectorAll('.subtitle').forEach(el => el.classList.remove('show'));
