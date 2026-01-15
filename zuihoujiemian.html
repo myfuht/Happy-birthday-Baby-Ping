@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <base href="./">
     <title>属于我们的生日回忆 ❤️</title>
@@ -18,18 +18,20 @@
             background: #ffc2d1;
             min-height: 100vh;
             position: relative;
-            overflow: hidden;
-            padding: 20px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding: 15px;
         }
 
-        /* 动态飘落小爱心（原有结构保留） */
+        /* 动态飘落小爱心（保留原有效果） */
         .floating-heart {
-            position: absolute;
+            position: fixed;
             color: #f472b6;
             opacity: 0.3;
             font-size: 12px;
             animation: float-down 8s linear infinite;
             pointer-events: none;
+            z-index: 1;
         }
         @keyframes float-down {
             0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
@@ -38,25 +40,26 @@
             100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
 
-        /* 顶部标题（原有结构保留） */
+        /* 顶部标题（手机适配字号） */
         #title {
-            font-size: 28px;
+            font-size: 6vw; /* 适配不同手机屏幕 */
             color: #fff;
             font-weight: bold;
             text-align: center;
-            margin-top: 10px;
-            margin-bottom: 20px;
+            margin: 10px 0 20px;
             -webkit-text-stroke: 1px #d6408c;
             text-shadow: 0 0 15px #d6408c;
             animation: fadeIn 1s ease-out forwards;
             opacity: 0;
+            z-index: 2;
+            position: relative;
         }
         @keyframes fadeIn {
             0% { opacity: 0; transform: translateY(-20px); }
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* 播放音乐提示（原有结构保留） */
+        /* 播放音乐提示（保留原有效果） */
         #musicPrompt {
             position: fixed;
             top: 10%;
@@ -66,7 +69,7 @@
             color: #fff;
             padding: 8px 18px;
             border-radius: 20px;
-            font-size: 16px;
+            font-size: 4vw;
             z-index: 100;
             animation: pulse 1.5s infinite;
             display: none;
@@ -76,85 +79,67 @@
             50% { opacity: 0.8; transform: translateX(-50%) scale(1.05); }
         }
 
-        /* 图片轮播容器（核心修改：适配图片完整显示） */
+        /* 图片轮播容器（核心重构：适配图片完整显示） */
         #carouselWrapper {
             position: relative;
             width: 100%;
-            /* 改为自适应高度，最大80vw避免过高 */
-            height: auto;
-            max-height: 70vh;
+            margin: 0 auto 20px;
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            /* 兜底背景：图片加载失败时显示粉色爱心背景 */
             background: linear-gradient(135deg, #fbcfe8, #f472b6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* 图片容器（核心修改：让图片完整显示） */
-        .carousel-item {
-            position: absolute;
-            width: 100%;
-            /* 高度自适应 */
-            height: 100%;
-            opacity: 0;
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-            transform: scale(0.95);
-            /* 确保层级 */
-            z-index: 1;
-            /* 让图片居中 */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .carousel-item.active {
-            opacity: 1;
-            transform: scale(1);
             z-index: 2;
         }
-        /* 核心修改：object-fit改为contain，图片完整显示不裁剪 */
+
+        /* 图片项容器（核心修改：取消绝对定位导致的裁剪） */
+        .carousel-container {
+            width: 100%;
+            overflow: hidden;
+        }
+        .carousel-item {
+            width: 100%;
+            display: none; /* 初始隐藏 */
+        }
+        .carousel-item.active {
+            display: block; /* 激活时显示 */
+            animation: slideIn 0.6s ease-out forwards;
+        }
+        @keyframes slideIn {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* 核心：图片完整显示，不裁剪、不拉伸 */
         .carousel-item img {
             width: 100%;
-            height: 100%;
-            /* 从cover改为contain，完整显示图片 */
-            object-fit: contain;
-            /* 图片居中 */
-            object-position: center;
-        }
-        /* 图片加载失败的占位样式 */
-        .carousel-item img::after {
-            content: "❤️";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 50px;
+            height: auto; /* 高度自适应 */
+            max-height: 70vh; /* 限制最大高度，避免超出手机屏幕 */
+            display: block;
+            margin: 0 auto; /* 水平居中 */
+            object-fit: contain; /* 完整显示 */
         }
 
-        /* 图片文字叠加层（调整位置，避免遮挡图片） */
+        /* 图片文字叠加层（适配手机字号，不遮挡图片） */
         .image-text {
-            position: absolute;
-            bottom: 0;
-            left: 0;
             width: 100%;
-            padding: 15px 20px;
+            padding: 12px 15px;
             background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
             color: #fff;
-            font-size: 18px;
+            font-size: 4.5vw;
             line-height: 1.3;
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            z-index: 3;
+            position: relative;
+            bottom: 0;
         }
 
-        /* 轮播指示器（原有结构保留） */
+        /* 轮播指示器（手机适配大小） */
         #indicators {
             display: flex;
             justify-content: center;
             gap: 8px;
             margin-bottom: 15px;
+            z-index: 2;
+            position: relative;
         }
         .indicator {
             width: 10px;
@@ -168,20 +153,22 @@
             background: #f472b6;
         }
 
-        /* 切换按钮（原有结构保留） */
+        /* 切换按钮（手机大点击区域） */
         #navButtons {
             display: flex;
             justify-content: center;
             gap: 15px;
             margin-bottom: 20px;
+            z-index: 2;
+            position: relative;
         }
         .nav-btn {
-            padding: 12px 30px;
+            padding: 10px 25px;
             border: 2px solid #fff;
             border-radius: 30px;
             background: rgba(255,255,255,0.1);
             color: #fff;
-            font-size: 18px;
+            font-size: 4.5vw;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -191,23 +178,25 @@
             transform: translateY(-2px);
         }
 
-        /* 底部祝福文案（原有结构保留） */
+        /* 底部祝福文案（手机适配字号） */
         #wishText {
             text-align: center;
             color: #fff;
-            font-size: 20px;
+            font-size: 5vw;
             line-height: 1.5;
             padding: 0 10px;
             animation: fadeIn 1s ease-out forwards;
             animation-delay: 0.5s;
             opacity: 0;
+            z-index: 2;
+            position: relative;
         }
 
-        /* 爆炸爱心效果（原有结构保留） */
+        /* 爆炸爱心效果（保留原有效果） */
         .explosion-heart {
             position: absolute;
             color: #ff4d94;
-            font-size: 20px;
+            font-size: 5vw;
             pointer-events: none;
             z-index: 95;
             animation: explosion 1s ease-out forwards;
@@ -216,67 +205,59 @@
             0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
             100% { opacity: 0; transform: translate(var(--x), var(--y)) rotate(360deg) scale(0.5); }
         }
-
-        /* 调试提示（不影响视觉） */
-        #debugTip {
-            position: fixed;
-            bottom: 10px;
-            left: 10px;
-            color: #fff;
-            font-size: 12px;
-            opacity: 0.5;
-            pointer-events: none;
-        }
     </style>
 </head>
 <body>
-    <!-- 修复：音频标签完整闭合 -->
+    <!-- 音频标签（完整闭合） -->
     <audio id="bgMusic" preload="auto" loop>
         <source src="shijianmeihao.mp3" type="audio/mpeg">
         您的浏览器不支持音频播放，请升级浏览器！
     </audio>
 
-    <!-- 动态爱心容器（原有结构） -->
+    <!-- 动态爱心容器 -->
     <div id="heartContainer"></div>
-    <!-- 音乐播放提示（原有结构） -->
+    <!-- 音乐播放提示 -->
     <div id="musicPrompt">点击播放专属BGM 🎵</div>
-    <!-- 顶部标题（原有结构） -->
+    <!-- 顶部标题 -->
     <h1 id="title">我们的专属回忆</h1>
 
-    <!-- 图片轮播容器（原有结构+容错） -->
+    <!-- 图片轮播容器（重构后） -->
     <div id="carouselWrapper">
-        <!-- 图片项：添加加载失败占位（base64爱心） -->
-        <div class="carousel-item active">
-            <img src="pp.1.jpg" alt="回忆1" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2Y0NzJiNiIvPjwvc3ZnPg=='">
-            <div class="image-text">第一次见面，你笑起来眼睛像星星✨</div>
-        </div>
-        <div class="carousel-item">
-            <img src="pp.2.jpg" alt="回忆2" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2Y0NzJiNiIvPjwvc3ZnPg=='">
-            <div class="image-text">一起喝奶茶的雨天，你抢了我的芋圆😆</div>
-        </div>
-        <div class="carousel-item">
-            <img src="pp.3.jpg" alt="回忆3" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2Y0NzJiNiIvPjwvc3ZnPg=='">
-            <div class="image-text">去年生日许的愿，我偷偷记下来啦🎂</div>
-        </div>
-        <div class="carousel-item">
-            <img src="pp.4.jpg" alt="回忆4" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2Y0NzJiNiIvPjwvc3ZnPg=='">
-            <div class="image-text">第一次牵手，手心全是汗💗</div>
-        </div>
-        <div class="carousel-item">
-            <img src="pp.5.jpg" alt="回忆5" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2Y0NzJiNiIvPjwvc3ZnPg=='">
-            <div class="image-text">陪你看的第一场电影，你靠在我肩膀睡着了😴</div>
-        </div>
-        <div class="carousel-item">
-            <img src="pp.6.jpg" alt="回忆6" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2Y0NzJiNiIvPjwvc3ZnPg=='">
-            <div class="image-text">未来的每一个生日，我都想陪你过💖</div>
-        </div>
-        <!-- 兜底提示：图片加载失败时显示 -->
-        <div id="carouselFallback" style="position: absolute; z-index: 0; color: #fff; font-size: 18px; text-align: center; padding: 20px;">
-            回忆加载中...❤️
+        <div class="carousel-container">
+            <!-- 图片1 -->
+            <div class="carousel-item active">
+                <img src="pp.1.jpg" alt="回忆1" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0i3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2Y0NzJiNiIvPjwvc3ZnPg=='">
+                <div class="image-text">第一次见面，你笑起来眼睛像星星✨</div>
+            </div>
+            <!-- 图片2 -->
+            <div class="carousel-item">
+                <img src="pp.2.jpg" alt="回忆2" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0i3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2Y0NzJiNiIvPjwvc3ZnPg=='">
+                <div class="image-text">一起喝奶茶的雨天，你抢了我的芋圆😆</div>
+            </div>
+            <!-- 图片3 -->
+            <div class="carousel-item">
+                <img src="pp.3.jpg" alt="回忆3" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0i3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2Y0NzJiNiIvPjwvc3ZnPg=='">
+                <div class="image-text">去年生日许的愿，我偷偷记下来啦🎂</div>
+            </div>
+            <!-- 图片4 -->
+            <div class="carousel-item">
+                <img src="pp.4.jpg" alt="回忆4" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0i3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2Y0NzJiNiIvPjwvc3ZnPg=='">
+                <div class="image-text">第一次牵手，手心全是汗💗</div>
+            </div>
+            <!-- 图片5 -->
+            <div class="carousel-item">
+                <img src="pp.5.jpg" alt="回忆5" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0i3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2Y0NzJiNiIvPjwvc3ZnPg=='">
+                <div class="image-text">陪你看的第一场电影，你靠在我肩膀睡着了😴</div>
+            </div>
+            <!-- 图片6 -->
+            <div class="carousel-item">
+                <img src="pp.6.jpg" alt="回忆6" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0i3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2Y0NzJiNiIvPjwvc3ZnPg=='">
+                <div class="image-text">未来的每一个生日，我都想陪你过💖</div>
+            </div>
         </div>
     </div>
 
-    <!-- 轮播指示器（原有结构） -->
+    <!-- 轮播指示器 -->
     <div id="indicators">
         <div class="indicator active"></div>
         <div class="indicator"></div>
@@ -286,26 +267,21 @@
         <div class="indicator"></div>
     </div>
 
-    <!-- 切换按钮（原有结构） -->
+    <!-- 切换按钮 -->
     <div id="navButtons">
         <button class="nav-btn" id="prevBtn">上一个回忆</button>
         <button class="nav-btn" id="nextBtn">下一个回忆</button>
     </div>
 
-    <!-- 底部祝福文案（原有结构） -->
+    <!-- 底部祝福文案 -->
     <div id="wishText">
         亲爱的萍宝宝，生日快乐！<br>
         愿我们的回忆像星星，越攒越多✨<br>
         新的一岁，继续做我的小公主吧👑
     </div>
 
-    <!-- 调试提示（新增，不影响视觉） -->
-    <div id="debugTip">
-        若图片未显示：检查文件名/用Live Server打开
-    </div>
-
     <script>
-        // 生成动态小爱心（原有逻辑）
+        // 生成动态小爱心（保留原有逻辑）
         function createFloatingHearts() {
             const container = document.getElementById('heartContainer');
             for (let i = 0; i < 15; i++) {
@@ -318,7 +294,7 @@
             }
         }
 
-        // 生成爆炸爱心（原有逻辑）
+        // 生成爆炸爱心（保留原有逻辑）
         function createExplosionHearts(x, y) {
             const container = document.getElementById('carouselWrapper');
             for (let i = 0; i < 8; i++) {
@@ -337,7 +313,7 @@
             }
         }
 
-        // DOM元素获取（原有逻辑+新增容错）
+        // DOM元素获取
         const musicPrompt = document.getElementById('musicPrompt');
         const bgMusic = document.getElementById('bgMusic');
         const carouselItems = document.querySelectorAll('.carousel-item');
@@ -345,67 +321,16 @@
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
         const carouselWrapper = document.getElementById('carouselWrapper');
-        const carouselFallback = document.getElementById('carouselFallback');
         let currentIndex = 0;
 
-        // 新增：适配图片高度，确保完整显示
-        function adaptImageHeight() {
-            const activeImg = carouselItems[currentIndex].querySelector('img');
-            if (activeImg) {
-                // 等待图片加载完成后调整容器高度
-                activeImg.onload = function() {
-                    carouselWrapper.style.height = 'auto';
-                    carouselWrapper.style.maxHeight = '70vh';
-                };
-                // 加载失败也调整高度
-                activeImg.onerror = function() {
-                    carouselWrapper.style.height = 'auto';
-                    carouselWrapper.style.maxHeight = '70vh';
-                };
-            }
-        }
-
-        // 新增：检查图片加载状态
-        function checkImageLoad() {
-            let loadedCount = 0;
-            const images = document.querySelectorAll('.carousel-item img');
-            images.forEach(img => {
-                if (img.complete) {
-                    loadedCount++;
-                    adaptImageHeight();
-                }
-                img.onload = () => {
-                    loadedCount++;
-                    adaptImageHeight();
-                    if (loadedCount === images.length) {
-                        carouselFallback.style.display = 'none';
-                    }
-                };
-                img.onerror = () => {
-                    console.log(`图片加载失败：${img.src}`);
-                    loadedCount++;
-                    adaptImageHeight();
-                    if (loadedCount === images.length) {
-                        carouselFallback.style.display = 'none';
-                    }
-                };
-            });
-            // 3秒后强制隐藏兜底提示
-            setTimeout(() => {
-                carouselFallback.style.display = 'none';
-            }, 3000);
-        }
-
-        // 音乐播放函数（原有逻辑+增强容错）
+        // 音乐播放（手机端兼容）
         function playBackgroundMusic() {
             musicPrompt.style.display = 'block';
             const playHandler = () => {
-                // 强制加载音乐
                 bgMusic.load();
                 bgMusic.play().then(() => {
                     musicPrompt.style.display = 'none';
                 }).catch(err => {
-                    console.log("音乐播放兜底触发：", err);
                     musicPrompt.innerText = '点击播放音乐 🎵';
                 });
                 document.body.removeEventListener('click', playHandler);
@@ -415,66 +340,71 @@
             document.body.addEventListener('touchstart', playHandler);
         }
 
-        // 切换轮播图（原有逻辑+适配高度）
+        // 切换轮播图（核心重构：取消绝对定位切换）
         function goToSlide(index) {
+            // 隐藏当前图片
             carouselItems[currentIndex].classList.remove('active');
             indicators[currentIndex].classList.remove('active');
+            // 更新索引
             currentIndex = index;
+            // 显示新图片
             carouselItems[currentIndex].classList.add('active');
             indicators[currentIndex].classList.add('active');
-            // 切换后适配图片高度
-            adaptImageHeight();
+            // 触发爱心特效
             const slideRect = carouselItems[currentIndex].getBoundingClientRect();
             createExplosionHearts(slideRect.left + slideRect.width/2, slideRect.top + slideRect.height/2);
         }
 
-        // 下一张（原有逻辑）
+        // 下一张
         function nextSlide() {
             const nextIndex = (currentIndex + 1) % carouselItems.length;
             goToSlide(nextIndex);
         }
 
-        // 上一张（原有逻辑）
+        // 上一张
         function prevSlide() {
             const prevIndex = (currentIndex - 1 + carouselItems.length) % carouselItems.length;
             goToSlide(prevIndex);
         }
 
-        // 触摸滑动切换（原有逻辑）
+        // 触摸滑动切换（手机原生体验）
         let startX = 0;
-        let endX = 0;
+        let isSwiping = false;
         carouselWrapper.addEventListener('touchstart', (e) => {
             startX = e.touches[0].clientX;
+            isSwiping = true;
         });
-        carouselWrapper.addEventListener('touchend', (e) => {
-            endX = e.changedTouches[0].clientX;
-            const diff = startX - endX;
+        carouselWrapper.addEventListener('touchmove', (e) => {
+            if (!isSwiping) return;
+            const moveX = e.touches[0].clientX;
+            const diff = startX - moveX;
+            // 滑动距离超过50px触发切换
             if (diff > 50) {
+                isSwiping = false;
                 nextSlide();
             } else if (diff < -50) {
+                isSwiping = false;
                 prevSlide();
             }
         });
+        carouselWrapper.addEventListener('touchend', () => {
+            isSwiping = false;
+        });
 
-        // 事件绑定（原有逻辑）
+        // 绑定按钮事件
         prevBtn.addEventListener('click', prevSlide);
         nextBtn.addEventListener('click', nextSlide);
         indicators.forEach((indicator, index) => {
             indicator.addEventListener('click', () => goToSlide(index));
         });
 
-        // 页面初始化（原有逻辑+新增检查）
+        // 页面初始化
         window.onload = function() {
-            // 优先创建爱心，确保页面不空白
-            createFloatingHearts();
-            // 检查图片加载并适配高度
-            checkImageLoad();
-            // 初始化音乐播放
-            playBackgroundMusic();
-            // 调试信息：打印文件路径
-            console.log("当前HTML路径：", window.location.href);
-            console.log("音乐文件路径：", bgMusic.src);
-            console.log("第一张图片路径：", carouselItems[0].querySelector('img').src);
+            createFloatingHearts(); // 先显示爱心，避免空白
+            playBackgroundMusic();  // 初始化音乐
+            // 确保第一张图片完整显示
+            carouselItems[0].classList.add('active');
+            indicators[0].classList.add('active');
         };
     </script>
 </body>
