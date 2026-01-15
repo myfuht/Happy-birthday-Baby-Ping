@@ -20,7 +20,7 @@
             padding: 20px;
         }
 
-        /* 动态飘落小爱心（比前两个界面更细腻） */
+        /* 动态飘落小爱心 */
         .floating-heart {
             position: absolute;
             color: #f472b6;
@@ -36,7 +36,7 @@
             100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
 
-        /* 顶部标题（和前两个界面风格统一） */
+        /* 顶部标题 */
         #title {
             font-size: 28px;
             color: #fff;
@@ -54,7 +54,7 @@
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* 播放音乐提示（和前两个界面风格统一） */
+        /* 播放音乐提示 */
         #musicPrompt {
             position: fixed;
             top: 10%;
@@ -74,7 +74,7 @@
             50% { opacity: 0.8; transform: translateX(-50%) scale(1.05); }
         }
 
-        /* 图片轮播容器（手机占比70%高度） */
+        /* 图片轮播容器 */
         #carouselWrapper {
             position: relative;
             width: 100%;
@@ -118,7 +118,7 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* 轮播指示器（底部圆点） */
+        /* 轮播指示器 */
         #indicators {
             display: flex;
             justify-content: center;
@@ -137,7 +137,7 @@
             background: #f472b6;
         }
 
-        /* 切换按钮（手机友好的大点击区域） */
+        /* 切换按钮 */
         #navButtons {
             display: flex;
             justify-content: center;
@@ -172,7 +172,7 @@
             opacity: 0;
         }
 
-        /* 爆炸爱心效果（切换图片时触发） */
+        /* 爆炸爱心效果 */
         .explosion-heart {
             position: absolute;
             color: #ff4d94;
@@ -202,9 +202,8 @@
     <!-- 顶部标题 -->
     <h1 id="title">我们的专属回忆</h1>
 
-    <!-- 图片轮播容器 -->
+    <!-- 图片轮播容器（已修改为pp.1.jpg-pp.6.jpg） -->
     <div id="carouselWrapper">
-        <!-- 图片项（pp1-pp6） -->
         <div class="carousel-item active">
             <img src="pp.1.jpg" alt="回忆1">
             <div class="image-text">第一次见面，你笑起来眼睛像星星✨</div>
@@ -296,7 +295,7 @@
         const nextBtn = document.getElementById('nextBtn');
         let currentIndex = 0;
 
-        // 音乐播放函数（手机端适配）
+        // 音乐播放函数
         function playBackgroundMusic() {
             musicPrompt.style.display = 'block';
             const playHandler = () => {
@@ -314,15 +313,11 @@
 
         // 切换轮播图
         function goToSlide(index) {
-            // 移除当前激活状态
             carouselItems[currentIndex].classList.remove('active');
             indicators[currentIndex].classList.remove('active');
-            // 更新索引
             currentIndex = index;
-            // 添加新激活状态
             carouselItems[currentIndex].classList.add('active');
             indicators[currentIndex].classList.add('active');
-            // 触发爆炸爱心效果
             const slideRect = carouselItems[currentIndex].getBoundingClientRect();
             createExplosionHearts(slideRect.left + slideRect.width/2, slideRect.top + slideRect.height/2);
         }
@@ -339,7 +334,7 @@
             goToSlide(prevIndex);
         }
 
-        // 触摸滑动切换（手机核心交互）
+        // 触摸滑动切换
         let startX = 0;
         let endX = 0;
         document.getElementById('carouselWrapper').addEventListener('touchstart', (e) => {
@@ -348,9 +343,9 @@
         document.getElementById('carouselWrapper').addEventListener('touchend', (e) => {
             endX = e.changedTouches[0].clientX;
             const diff = startX - endX;
-            if (diff > 50) { // 左滑→下一张
+            if (diff > 50) {
                 nextSlide();
-            } else if (diff < -50) { // 右滑→上一张
+            } else if (diff < -50) {
                 prevSlide();
             }
         });
