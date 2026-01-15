@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <!-- 新增：本地文件加载兼容 -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <base href="./">
     <title>属于我们的生日回忆 ❤️</title>
@@ -77,11 +76,13 @@
             50% { opacity: 0.8; transform: translateX(-50%) scale(1.05); }
         }
 
-        /* 图片轮播容器（原有结构保留+容错） */
+        /* 图片轮播容器（核心修改：适配图片完整显示） */
         #carouselWrapper {
             position: relative;
             width: 100%;
-            height: 65vh;
+            /* 改为自适应高度，最大80vw避免过高 */
+            height: auto;
+            max-height: 70vh;
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
@@ -91,31 +92,36 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #fff;
-            font-size: 20px;
         }
 
-        /* 图片容器（原有结构保留+加载容错） */
+        /* 图片容器（核心修改：让图片完整显示） */
         .carousel-item {
             position: absolute;
             width: 100%;
+            /* 高度自适应 */
             height: 100%;
             opacity: 0;
             transition: opacity 0.6s ease-out, transform 0.6s ease-out;
             transform: scale(0.95);
             /* 确保层级 */
             z-index: 1;
+            /* 让图片居中 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .carousel-item.active {
             opacity: 1;
             transform: scale(1);
             z-index: 2;
         }
+        /* 核心修改：object-fit改为contain，图片完整显示不裁剪 */
         .carousel-item img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            /* 图片加载失败时显示占位 */
+            /* 从cover改为contain，完整显示图片 */
+            object-fit: contain;
+            /* 图片居中 */
             object-position: center;
         }
         /* 图片加载失败的占位样式 */
@@ -128,7 +134,7 @@
             font-size: 50px;
         }
 
-        /* 图片文字叠加层（原有结构保留） */
+        /* 图片文字叠加层（调整位置，避免遮挡图片） */
         .image-text {
             position: absolute;
             bottom: 0;
@@ -211,7 +217,7 @@
             100% { opacity: 0; transform: translate(var(--x), var(--y)) rotate(360deg) scale(0.5); }
         }
 
-        /* 新增：调试提示（不影响视觉） */
+        /* 调试提示（不影响视觉） */
         #debugTip {
             position: fixed;
             bottom: 10px;
@@ -338,8 +344,26 @@
         const indicators = document.querySelectorAll('.indicator');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
+        const carouselWrapper = document.getElementById('carouselWrapper');
         const carouselFallback = document.getElementById('carouselFallback');
         let currentIndex = 0;
+
+        // 新增：适配图片高度，确保完整显示
+        function adaptImageHeight() {
+            const activeImg = carouselItems[currentIndex].querySelector('img');
+            if (activeImg) {
+                // 等待图片加载完成后调整容器高度
+                activeImg.onload = function() {
+                    carouselWrapper.style.height = 'auto';
+                    carouselWrapper.style.maxHeight = '70vh';
+                };
+                // 加载失败也调整高度
+                activeImg.onerror = function() {
+                    carouselWrapper.style.height = 'auto';
+                    carouselWrapper.style.maxHeight = '70vh';
+                };
+            }
+        }
 
         // 新增：检查图片加载状态
         function checkImageLoad() {
@@ -348,9 +372,11 @@
             images.forEach(img => {
                 if (img.complete) {
                     loadedCount++;
+                    adaptImageHeight();
                 }
                 img.onload = () => {
                     loadedCount++;
+                    adaptImageHeight();
                     if (loadedCount === images.length) {
                         carouselFallback.style.display = 'none';
                     }
@@ -358,6 +384,7 @@
                 img.onerror = () => {
                     console.log(`图片加载失败：${img.src}`);
                     loadedCount++;
+                    adaptImageHeight();
                     if (loadedCount === images.length) {
                         carouselFallback.style.display = 'none';
                     }
@@ -388,13 +415,15 @@
             document.body.addEventListener('touchstart', playHandler);
         }
 
-        // 切换轮播图（原有逻辑）
+        // 切换轮播图（原有逻辑+适配高度）
         function goToSlide(index) {
             carouselItems[currentIndex].classList.remove('active');
             indicators[currentIndex].classList.remove('active');
             currentIndex = index;
             carouselItems[currentIndex].classList.add('active');
             indicators[currentIndex].classList.add('active');
+            // 切换后适配图片高度
+            adaptImageHeight();
             const slideRect = carouselItems[currentIndex].getBoundingClientRect();
             createExplosionHearts(slideRect.left + slideRect.width/2, slideRect.top + slideRect.height/2);
         }
@@ -414,10 +443,10 @@
         // 触摸滑动切换（原有逻辑）
         let startX = 0;
         let endX = 0;
-        document.getElementById('carouselWrapper').addEventListener('touchstart', (e) => {
+        carouselWrapper.addEventListener('touchstart', (e) => {
             startX = e.touches[0].clientX;
         });
-        document.getElementById('carouselWrapper').addEventListener('touchend', (e) => {
+        carouselWrapper.addEventListener('touchend', (e) => {
             endX = e.changedTouches[0].clientX;
             const diff = startX - endX;
             if (diff > 50) {
@@ -438,7 +467,7 @@
         window.onload = function() {
             // 优先创建爱心，确保页面不空白
             createFloatingHearts();
-            // 检查图片加载
+            // 检查图片加载并适配高度
             checkImageLoad();
             // 初始化音乐播放
             playBackgroundMusic();
